@@ -20,7 +20,6 @@ CREATE TABLE t
 SHOW INT(5)
 );
 
-
 CREATE TABLE t
 (
 `SHOW` INT(5)
