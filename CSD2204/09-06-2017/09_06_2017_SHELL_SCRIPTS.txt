@@ -1,0 +1,673 @@
+
+Setting environment for using XAMPP for Windows.
+715368@203-IMAC13 c:\xampp
+# mysql -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 34
+Server version: 10.1.21-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2016, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| phpmyadmin         |
+| test               |
++--------------------+
+5 rows in set (0.00 sec)
+
+MariaDB [(none)]> create database myTestDB;
+Query OK, 1 row affected (0.00 sec)
+
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| mytestdb           |
+| performance_schema |
+| phpmyadmin         |
+| test               |
++--------------------+
+6 rows in set (0.00 sec)
+
+MariaDB [(none)]> use mytestdb;
+Database changed
+MariaDB [mytestdb]> SHOW TABLES;
+Empty set (0.00 sec)
+
+MariaDB [mytestdb]> CREATE TABLE STUDENT
+    -> (
+    -> student_id INT(5),
+    -> firstname VARCHAR(25),
+    -> lastname VARCHAR(25),
+    -> gender  VARCHAR(25),
+    -> age     INT,
+    -> course VARCHAR(25)
+    -> );
+Query OK, 0 rows affected (0.41 sec)
+
+MariaDB [mytestdb]> SHOW TABLES;
++--------------------+
+| Tables_in_mytestdb |
++--------------------+
+| student            |
++--------------------+
+1 row in set (0.00 sec)
+
+MariaDB [mytestdb]> CREATE TABLE t
+    -> (
+    -> SHOW INT(5)
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'SHOW INT(5)
+)' at line 3
+MariaDB [mytestdb]> CREATE TABLE t
+    -> (
+    -> `SHOW` INT(5)
+    -> );
+Query OK, 0 rows affected (0.22 sec)
+
+MariaDB [mytestdb]> INSERT INTO STUDENT
+    -> VALUES (
+    -> 1,'KALPANA','RAMANAN','FEMALE','27','MADT'
+    -> );
+Query OK, 1 row affected (0.03 sec)
+
+MariaDB [mytestdb]>  DESC STUDENT;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| student_id | int(5)      | YES  |     | NULL    |       |
+| firstname  | varchar(25) | YES  |     | NULL    |       |
+| lastname   | varchar(25) | YES  |     | NULL    |       |
+| gender     | varchar(25) | YES  |     | NULL    |       |
+| age        | int(11)     | YES  |     | NULL    |       |
+| course     | varchar(25) | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * FROM STUDENT;
++------------+-----------+----------+--------+------+--------+
+| student_id | firstname | lastname | gender | age  | course |
++------------+-----------+----------+--------+------+--------+
+|          1 | KALPANA   | RAMANAN  | FEMALE |   27 | MADT   |
++------------+-----------+----------+--------+------+--------+
+1 row in set (0.00 sec)
+
+MariaDB [mytestdb]> INSERT STUDENT
+    -> VALUES
+    -> (
+    -> 1,'SAI','PRAVEEN','MALE','27','BIG DATA'
+    -> );
+Query OK, 1 row affected (0.09 sec)
+
+MariaDB [mytestdb]> SELECT * FROM STUDENT;
++------------+-----------+----------+--------+------+----------+
+| student_id | firstname | lastname | gender | age  | course   |
++------------+-----------+----------+--------+------+----------+
+|          1 | KALPANA   | RAMANAN  | FEMALE |   27 | MADT     |
+|          1 | SAI       | PRAVEEN  | MALE   |   27 | BIG DATA |
++------------+-----------+----------+--------+------+----------+
+2 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> DELETE FROM STUDENT WHERE FIRSTNAME = 'SAI';
+Query OK, 1 row affected (0.05 sec)
+
+MariaDB [mytestdb]> SELECT * FROM STUDENT;
++------------+-----------+----------+--------+------+--------+
+| student_id | firstname | lastname | gender | age  | course |
++------------+-----------+----------+--------+------+--------+
+|          1 | KALPANA   | RAMANAN  | FEMALE |   27 | MADT   |
++------------+-----------+----------+--------+------+--------+
+1 row in set (0.00 sec)
+
+MariaDB [mytestdb]> INSERT STUDENT
+    -> VALUES
+    -> (
+    -> 2,'SAI','PRAVEEN','MALE','27','BIG DATA'
+    -> );
+Query OK, 1 row affected (0.03 sec)
+
+MariaDB [mytestdb]> 2,'SAI','PRAVEEN','MALE','27','BIG DATA'
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '2,'SAI','PRAVEEN','MALE','27','BIG DATA'' at line 1
+MariaDB [mytestdb]> SELECT * FROM STUDENT;
++------------+-----------+----------+--------+------+----------+
+| student_id | firstname | lastname | gender | age  | course   |
++------------+-----------+----------+--------+------+----------+
+|          1 | KALPANA   | RAMANAN  | FEMALE |   27 | MADT     |
+|          2 | SAI       | PRAVEEN  | MALE   |   27 | BIG DATA |
++------------+-----------+----------+--------+------+----------+
+2 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> INSERT INTO STUDENT
+    -> VALUES(STUDENT_ID,FIRSTNAME,LASTNAME,GENDER,AGE,COURSE) (
+    -> 3,'MANOCH','RICHARD','MALE','29','MIOS'
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '(
+3,'MANOCH','RICHARD','MALE','29','MIOS'
+)' at line 2
+MariaDB [mytestdb]> DESC STUDENT;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| student_id | int(5)      | YES  |     | NULL    |       |
+| firstname  | varchar(25) | YES  |     | NULL    |       |
+| lastname   | varchar(25) | YES  |     | NULL    |       |
+| gender     | varchar(25) | YES  |     | NULL    |       |
+| age        | int(11)     | YES  |     | NULL    |       |
+| course     | varchar(25) | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> INSERT INTO STUDENT(STUDENT_ID,FIRSTNAME,LASTNAME,GENDER,AGE,COURSE)
+    -> VALUES(
+    -> 3,'MANOCH','RICHARD','MALE','29','MIOS'
+    -> );
+Query OK, 1 row affected (0.04 sec)
+
+MariaDB [mytestdb]> SELECT * FROM STUDENT;
++------------+-----------+----------+--------+------+----------+
+| student_id | firstname | lastname | gender | age  | course   |
++------------+-----------+----------+--------+------+----------+
+|          1 | KALPANA   | RAMANAN  | FEMALE |   27 | MADT     |
+|          2 | SAI       | PRAVEEN  | MALE   |   27 | BIG DATA |
+|          3 | MANOCH    | RICHARD  | MALE   |   29 | MIOS     |
++------------+-----------+----------+--------+------+----------+
+3 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> INSERT STUDENT
+    -> VALUES
+    -> (
+    -> 4,'SARANYA','SEKAR','FEMALE','21','BIG DATA'
+    -> );
+Query OK, 1 row affected (0.05 sec)
+
+MariaDB [mytestdb]>
+MariaDB [mytestdb]> INSERT STUDENT
+    -> VALUES
+    -> (
+    -> 5,'NIMISHA','RAKASH','FEMALE','25','DATA'
+    -> );
+Query OK, 1 row affected (0.05 sec)
+
+MariaDB [mytestdb]> SELECT * FROM STUDENT;
++------------+-----------+----------+--------+------+----------+
+| student_id | firstname | lastname | gender | age  | course   |
++------------+-----------+----------+--------+------+----------+
+|          1 | KALPANA   | RAMANAN  | FEMALE |   27 | MADT     |
+|          2 | SAI       | PRAVEEN  | MALE   |   27 | BIG DATA |
+|          3 | MANOCH    | RICHARD  | MALE   |   29 | MIOS     |
+|          4 | SARANYA   | SEKAR    | FEMALE |   21 | BIG DATA |
+|          5 | NIMISHA   | RAKASH   | FEMALE |   25 | DATA     |
++------------+-----------+----------+--------+------+----------+
+5 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT TOP 3 FROM STUDENT;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '3 FROM STUDENT' at line 1
+MariaDB [mytestdb]> SELECT * FROM STUDENT;
++------------+-----------+----------+--------+------+----------+
+| student_id | firstname | lastname | gender | age  | course   |
++------------+-----------+----------+--------+------+----------+
+|          1 | KALPANA   | RAMANAN  | FEMALE |   27 | MADT     |
+|          2 | SAI       | PRAVEEN  | MALE   |   27 | BIG DATA |
+|          3 | MANOCH    | RICHARD  | MALE   |   29 | MIOS     |
+|          4 | SARANYA   | SEKAR    | FEMALE |   21 | BIG DATA |
+|          5 | NIMISHA   | RAKASH   | FEMALE |   25 | DATA     |
++------------+-----------+----------+--------+------+----------+
+5 rows in set (0.00 sec)
+
+MariaDB [mytestdb]>
+MariaDB [mytestdb]> SELECT * FROM STUDENT;
++------------+-----------+----------+--------+------+----------+
+| student_id | firstname | lastname | gender | age  | course   |
++------------+-----------+----------+--------+------+----------+
+|          1 | KALPANA   | RAMANAN  | FEMALE |   27 | MADT     |
+|          2 | SAI       | PRAVEEN  | MALE   |   27 | BIG DATA |
+|          3 | MANOCH    | RICHARD  | MALE   |   29 | MIOS     |
+|          4 | SARANYA   | SEKAR    | FEMALE |   21 | BIG DATA |
+|          5 | NIMISHA   | RAKASH   | FEMALE |   25 | DATA     |
++------------+-----------+----------+--------+------+----------+
+5 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT STUDENT_ID,FIRSTNAME FROM STUDENT;
++------------+-----------+
+| STUDENT_ID | FIRSTNAME |
++------------+-----------+
+|          1 | KALPANA   |
+|          2 | SAI       |
+|          3 | MANOCH    |
+|          4 | SARANYA   |
+|          5 | NIMISHA   |
++------------+-----------+
+5 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * FROM STUDENT WHERE STUDENT_ID = 2;
++------------+-----------+----------+--------+------+----------+
+| student_id | firstname | lastname | gender | age  | course   |
++------------+-----------+----------+--------+------+----------+
+|          2 | SAI       | PRAVEEN  | MALE   |   27 | BIG DATA |
++------------+-----------+----------+--------+------+----------+
+1 row in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * FROM STUDENT WHERE STUDENT_ID < 2;
++------------+-----------+----------+--------+------+--------+
+| student_id | firstname | lastname | gender | age  | course |
++------------+-----------+----------+--------+------+--------+
+|          1 | KALPANA   | RAMANAN  | FEMALE |   27 | MADT   |
++------------+-----------+----------+--------+------+--------+
+1 row in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * FROM STUDENT WHERE STUDENT_ID > 2;
++------------+-----------+----------+--------+------+----------+
+| student_id | firstname | lastname | gender | age  | course   |
++------------+-----------+----------+--------+------+----------+
+|          3 | MANOCH    | RICHARD  | MALE   |   29 | MIOS     |
+|          4 | SARANYA   | SEKAR    | FEMALE |   21 | BIG DATA |
+|          5 | NIMISHA   | RAKASH   | FEMALE |   25 | DATA     |
++------------+-----------+----------+--------+------+----------+
+3 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * FROM STUDENT WHERE STUDENT_ID != 2;
++------------+-----------+----------+--------+------+----------+
+| student_id | firstname | lastname | gender | age  | course   |
++------------+-----------+----------+--------+------+----------+
+|          1 | KALPANA   | RAMANAN  | FEMALE |   27 | MADT     |
+|          3 | MANOCH    | RICHARD  | MALE   |   29 | MIOS     |
+|          4 | SARANYA   | SEKAR    | FEMALE |   21 | BIG DATA |
+|          5 | NIMISHA   | RAKASH   | FEMALE |   25 | DATA     |
++------------+-----------+----------+--------+------+----------+
+4 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * FROM STUDENT WHERE STUDENT_ID GREATER THAN 2;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'GREATER THAN 2' at line 1
+MariaDB [mytestdb]> SELECT * FROM STUDENT WHERE STUDENT_ID LESS THAN 2;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'LESS THAN 2' at line 1
+MariaDB [mytestdb]> SELECT * FROM STUDENT WHERE GENDER = 'FEMALE';
++------------+-----------+----------+--------+------+----------+
+| student_id | firstname | lastname | gender | age  | course   |
++------------+-----------+----------+--------+------+----------+
+|          1 | KALPANA   | RAMANAN  | FEMALE |   27 | MADT     |
+|          4 | SARANYA   | SEKAR    | FEMALE |   21 | BIG DATA |
+|          5 | NIMISHA   | RAKASH   | FEMALE |   25 | DATA     |
++------------+-----------+----------+--------+------+----------+
+3 rows in set (0.00 sec)
+
+MariaDB [mytestdb]>
+MariaDB [mytestdb]> SELECT * FROM STUDENT LIMIT 2;
++------------+-----------+----------+--------+------+----------+
+| student_id | firstname | lastname | gender | age  | course   |
++------------+-----------+----------+--------+------+----------+
+|          1 | KALPANA   | RAMANAN  | FEMALE |   27 | MADT     |
+|          2 | SAI       | PRAVEEN  | MALE   |   27 | BIG DATA |
++------------+-----------+----------+--------+------+----------+
+2 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT TOP 3 PERCENT * FROM STUDENT;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '3 PERCENT * FROM STUDENT' at line 1
+MariaDB [mytestdb]> SELECT * FROM STUDENT LIMIT 3;
++------------+-----------+----------+--------+------+----------+
+| student_id | firstname | lastname | gender | age  | course   |
++------------+-----------+----------+--------+------+----------+
+|          1 | KALPANA   | RAMANAN  | FEMALE |   27 | MADT     |
+|          2 | SAI       | PRAVEEN  | MALE   |   27 | BIG DATA |
+|          3 | MANOCH    | RICHARD  | MALE   |   29 | MIOS     |
++------------+-----------+----------+--------+------+----------+
+3 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * FROM STUDENT LIMIT 3;
++------------+-----------+----------+--------+------+----------+
+| student_id | firstname | lastname | gender | age  | course   |
++------------+-----------+----------+--------+------+----------+
+|          1 | KALPANA   | RAMANAN  | FEMALE |   27 | MADT     |
+|          2 | SAI       | PRAVEEN  | MALE   |   27 | BIG DATA |
+|          3 | MANOCH    | RICHARD  | MALE   |   29 | MIOS     |
++------------+-----------+----------+--------+------+----------+
+3 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * FROM STUDENT
+    -> WHERE STUDENT_IN (SLECCT STUDENT_ID FROM STUDENT LIMIT 1)
+    -> LIMIT 3;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'FROM STUDENT LIMIT 1)
+LIMIT 3' at line 2
+MariaDB [mytestdb]> SHOW CREATE TABLE STUDENT\G
+*************************** 1. row ***************************
+       Table: STUDENT
+Create Table: CREATE TABLE `student` (
+  `student_id` int(5) DEFAULT NULL,
+  `firstname` varchar(25) DEFAULT NULL,
+  `lastname` varchar(25) DEFAULT NULL,
+  `gender` varchar(25) DEFAULT NULL,
+  `age` int(11) DEFAULT NULL,
+  `course` varchar(25) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+1 row in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * FROM STUDENT
+    -> FIRSTNAME LIKE 'S%';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'LIKE 'S%'' at line 2
+MariaDB [mytestdb]> SELECT * FROM STUDENT
+    -> WHERE
+    -> FIRSTNAME LIKE 'S%';
++------------+-----------+----------+--------+------+----------+
+| student_id | firstname | lastname | gender | age  | course   |
++------------+-----------+----------+--------+------+----------+
+|          2 | SAI       | PRAVEEN  | MALE   |   27 | BIG DATA |
+|          4 | SARANYA   | SEKAR    | FEMALE |   21 | BIG DATA |
++------------+-----------+----------+--------+------+----------+
+2 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> FIRSTNAME LIKE '%S%';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'FIRSTNAME LIKE '%S%'' at line 1
+MariaDB [mytestdb]> SELECT * FROM STUDENT
+    -> WHERE
+    -> FIRSTNAME LIKE 'S%';
++------------+-----------+----------+--------+------+----------+
+| student_id | firstname | lastname | gender | age  | course   |
++------------+-----------+----------+--------+------+----------+
+|          2 | SAI       | PRAVEEN  | MALE   |   27 | BIG DATA |
+|          4 | SARANYA   | SEKAR    | FEMALE |   21 | BIG DATA |
++------------+-----------+----------+--------+------+----------+
+2 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * FROM STUDENT
+    -> WHERE
+    -> FIRSTNAME LIKE '%S%';
++------------+-----------+----------+--------+------+----------+
+| student_id | firstname | lastname | gender | age  | course   |
++------------+-----------+----------+--------+------+----------+
+|          2 | SAI       | PRAVEEN  | MALE   |   27 | BIG DATA |
+|          4 | SARANYA   | SEKAR    | FEMALE |   21 | BIG DATA |
+|          5 | NIMISHA   | RAKASH   | FEMALE |   25 | DATA     |
++------------+-----------+----------+--------+------+----------+
+3 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * FROM STUDENT
+    -> WHERE
+    -> FIRSTNAME LIKE '_A%';
++------------+-----------+----------+--------+------+----------+
+| student_id | firstname | lastname | gender | age  | course   |
++------------+-----------+----------+--------+------+----------+
+|          1 | KALPANA   | RAMANAN  | FEMALE |   27 | MADT     |
+|          2 | SAI       | PRAVEEN  | MALE   |   27 | BIG DATA |
+|          3 | MANOCH    | RICHARD  | MALE   |   29 | MIOS     |
+|          4 | SARANYA   | SEKAR    | FEMALE |   21 | BIG DATA |
++------------+-----------+----------+--------+------+----------+
+4 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * FROM STUDENT
+    -> WHERE
+    -> FIRSTNAME LIKE '%_N';
+Empty set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * FROM STUDENT
+    -> WHERE
+    -> FIRSTNAME LIKE '%N';
+Empty set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * FROM STUDENT
+    -> WHERE
+    -> FIRSTNAME LIKE '%N';
+Empty set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * FROM ATUDENT ;
+ERROR 1146 (42S02): Table 'mytestdb.atudent' doesn't exist
+MariaDB [mytestdb]> SELECT * FROM STUDENT ;
++------------+-----------+----------+--------+------+----------+
+| student_id | firstname | lastname | gender | age  | course   |
++------------+-----------+----------+--------+------+----------+
+|          1 | KALPANA   | RAMANAN  | FEMALE |   27 | MADT     |
+|          2 | SAI       | PRAVEEN  | MALE   |   27 | BIG DATA |
+|          3 | MANOCH    | RICHARD  | MALE   |   29 | MIOS     |
+|          4 | SARANYA   | SEKAR    | FEMALE |   21 | BIG DATA |
+|          5 | NIMISHA   | RAKASH   | FEMALE |   25 | DATA     |
++------------+-----------+----------+--------+------+----------+
+5 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * FROM STUDENT WHERE FIRSNAME LIKE _A% OR LASTNAME LIKE %_E;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '% OR LASTNAME LIKE %_E' at line 1
+MariaDB [mytestdb]> SELECT * FROM STUDENT WHERE FIRSNAME LIKE '_A%' OR LASTNAME LIKE '%_E';
+ERROR 1054 (42S22): Unknown column 'FIRSNAME' in 'where clause'
+MariaDB [mytestdb]> SELECT * FROM STUDENT WHERE FIRSTNAME LIKE '_A%' OR LASTNAME LIKE '%_E';
++------------+-----------+----------+--------+------+----------+
+| student_id | firstname | lastname | gender | age  | course   |
++------------+-----------+----------+--------+------+----------+
+|          1 | KALPANA   | RAMANAN  | FEMALE |   27 | MADT     |
+|          2 | SAI       | PRAVEEN  | MALE   |   27 | BIG DATA |
+|          3 | MANOCH    | RICHARD  | MALE   |   29 | MIOS     |
+|          4 | SARANYA   | SEKAR    | FEMALE |   21 | BIG DATA |
++------------+-----------+----------+--------+------+----------+
+4 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * FROM STUDENT ;
++------------+-----------+----------+--------+------+----------+
+| student_id | firstname | lastname | gender | age  | course   |
++------------+-----------+----------+--------+------+----------+
+|          1 | KALPANA   | RAMANAN  | FEMALE |   27 | MADT     |
+|          2 | SAI       | PRAVEEN  | MALE   |   27 | BIG DATA |
+|          3 | MANOCH    | RICHARD  | MALE   |   29 | MIOS     |
+|          4 | SARANYA   | SEKAR    | FEMALE |   21 | BIG DATA |
+|          5 | NIMISHA   | RAKASH   | FEMALE |   25 | DATA     |
++------------+-----------+----------+--------+------+----------+
+5 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * FROM STUDENT WHERE AGE BETWEEN (10 AND 25);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '' at line 1
+MariaDB [mytestdb]> SELECT * FROM STUDENT WHERE AGE BETWEEN 10 AND 25;
++------------+-----------+----------+--------+------+----------+
+| student_id | firstname | lastname | gender | age  | course   |
++------------+-----------+----------+--------+------+----------+
+|          4 | SARANYA   | SEKAR    | FEMALE |   21 | BIG DATA |
+|          5 | NIMISHA   | RAKASH   | FEMALE |   25 | DATA     |
++------------+-----------+----------+--------+------+----------+
+2 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * FROM STUDENT WHERE GENDER IN ('MALE');
++------------+-----------+----------+--------+------+----------+
+| student_id | firstname | lastname | gender | age  | course   |
++------------+-----------+----------+--------+------+----------+
+|          2 | SAI       | PRAVEEN  | MALE   |   27 | BIG DATA |
+|          3 | MANOCH    | RICHARD  | MALE   |   29 | MIOS     |
++------------+-----------+----------+--------+------+----------+
+2 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * FROM STUDENT WHERE GENDER NOT IN ('MALE');
++------------+-----------+----------+--------+------+----------+
+| student_id | firstname | lastname | gender | age  | course   |
++------------+-----------+----------+--------+------+----------+
+|          1 | KALPANA   | RAMANAN  | FEMALE |   27 | MADT     |
+|          4 | SARANYA   | SEKAR    | FEMALE |   21 | BIG DATA |
+|          5 | NIMISHA   | RAKASH   | FEMALE |   25 | DATA     |
++------------+-----------+----------+--------+------+----------+
+3 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> ALTER TABLE STUDENT
+    -> ADD MARKS INT(5);
+Query OK, 0 rows affected (0.57 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [mytestdb]> DESC STUDENT;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| student_id | int(5)      | YES  |     | NULL    |       |
+| firstname  | varchar(25) | YES  |     | NULL    |       |
+| lastname   | varchar(25) | YES  |     | NULL    |       |
+| gender     | varchar(25) | YES  |     | NULL    |       |
+| age        | int(11)     | YES  |     | NULL    |       |
+| course     | varchar(25) | YES  |     | NULL    |       |
+| MARKS      | int(5)      | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+7 rows in set (0.02 sec)
+
+MariaDB [mytestdb]> SELECT  * FROM STUDNET;
+ERROR 1146 (42S02): Table 'mytestdb.studnet' doesn't exist
+MariaDB [mytestdb]> SELECT  * FROM STUDENT;
++------------+-----------+----------+--------+------+----------+-------+
+| student_id | firstname | lastname | gender | age  | course   | MARKS |
++------------+-----------+----------+--------+------+----------+-------+
+|          1 | KALPANA   | RAMANAN  | FEMALE |   27 | MADT     |  NULL |
+|          2 | SAI       | PRAVEEN  | MALE   |   27 | BIG DATA |  NULL |
+|          3 | MANOCH    | RICHARD  | MALE   |   29 | MIOS     |  NULL |
+|          4 | SARANYA   | SEKAR    | FEMALE |   21 | BIG DATA |  NULL |
+|          5 | NIMISHA   | RAKASH   | FEMALE |   25 | DATA     |  NULL |
++------------+-----------+----------+--------+------+----------+-------+
+5 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> ALTER TABLE STUDENT
+    -> ADD city VARCHAR(50) AFTER gender;
+Query OK, 0 rows affected (0.31 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [mytestdb]> SELECT  * FROM STUDNET;
+ERROR 1146 (42S02): Table 'mytestdb.studnet' doesn't exist
+MariaDB [mytestdb]> SELECT  * FROM STUDent;
++------------+-----------+----------+--------+------+------+----------+-------+
+| student_id | firstname | lastname | gender | city | age  | course   | MARKS |
++------------+-----------+----------+--------+------+------+----------+-------+
+|          1 | KALPANA   | RAMANAN  | FEMALE | NULL |   27 | MADT     |  NULL |
+|          2 | SAI       | PRAVEEN  | MALE   | NULL |   27 | BIG DATA |  NULL |
+|          3 | MANOCH    | RICHARD  | MALE   | NULL |   29 | MIOS     |  NULL |
+|          4 | SARANYA   | SEKAR    | FEMALE | NULL |   21 | BIG DATA |  NULL |
+|          5 | NIMISHA   | RAKASH   | FEMALE | NULL |   25 | DATA     |  NULL |
++------------+-----------+----------+--------+------+------+----------+-------+
+5 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> alter table student drop marks;
+Query OK, 0 rows affected (0.31 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [mytestdb]> SELECT  * FROM STUDent;
++------------+-----------+----------+--------+------+------+----------+
+| student_id | firstname | lastname | gender | city | age  | course   |
++------------+-----------+----------+--------+------+------+----------+
+|          1 | KALPANA   | RAMANAN  | FEMALE | NULL |   27 | MADT     |
+|          2 | SAI       | PRAVEEN  | MALE   | NULL |   27 | BIG DATA |
+|          3 | MANOCH    | RICHARD  | MALE   | NULL |   29 | MIOS     |
+|          4 | SARANYA   | SEKAR    | FEMALE | NULL |   21 | BIG DATA |
+|          5 | NIMISHA   | RAKASH   | FEMALE | NULL |   25 | DATA     |
++------------+-----------+----------+--------+------+------+----------+
+5 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> alter table student
+    -> add marks int(5);
+Query OK, 0 rows affected (0.28 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [mytestdb]> SELECT  * FROM STUDent;
++------------+-----------+----------+--------+------+------+----------+-------+
+| student_id | firstname | lastname | gender | city | age  | course   | marks |
++------------+-----------+----------+--------+------+------+----------+-------+
+|          1 | KALPANA   | RAMANAN  | FEMALE | NULL |   27 | MADT     |  NULL |
+|          2 | SAI       | PRAVEEN  | MALE   | NULL |   27 | BIG DATA |  NULL |
+|          3 | MANOCH    | RICHARD  | MALE   | NULL |   29 | MIOS     |  NULL |
+|          4 | SARANYA   | SEKAR    | FEMALE | NULL |   21 | BIG DATA |  NULL |
+|          5 | NIMISHA   | RAKASH   | FEMALE | NULL |   25 | DATA     |  NULL |
++------------+-----------+----------+--------+------+------+----------+-------+
+5 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> desc student;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| student_id | int(5)      | YES  |     | NULL    |       |
+| firstname  | varchar(25) | YES  |     | NULL    |       |
+| lastname   | varchar(25) | YES  |     | NULL    |       |
+| gender     | varchar(25) | YES  |     | NULL    |       |
+| city       | varchar(50) | YES  |     | NULL    |       |
+| age        | int(11)     | YES  |     | NULL    |       |
+| course     | varchar(25) | YES  |     | NULL    |       |
+| marks      | int(5)      | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+8 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> alter table student modify student_id not null;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'not null' at line 1
+MariaDB [mytestdb]> alter table student add student_id not null;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'not null' at line 1
+MariaDB [mytestdb]> alter table student add student_id int(6) not null;
+ERROR 1060 (42S21): Duplicate column name 'student_id'
+MariaDB [mytestdb]> desc student;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| student_id | int(5)      | YES  |     | NULL    |       |
+| firstname  | varchar(25) | YES  |     | NULL    |       |
+| lastname   | varchar(25) | YES  |     | NULL    |       |
+| gender     | varchar(25) | YES  |     | NULL    |       |
+| city       | varchar(50) | YES  |     | NULL    |       |
+| age        | int(11)     | YES  |     | NULL    |       |
+| course     | varchar(25) | YES  |     | NULL    |       |
+| marks      | int(5)      | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+8 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> alter table student modify student_id int(6) not null;
+Query OK, 5 rows affected (1.53 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+MariaDB [mytestdb]> desc student;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| student_id | int(6)      | NO   |     | NULL    |       |
+| firstname  | varchar(25) | YES  |     | NULL    |       |
+| lastname   | varchar(25) | YES  |     | NULL    |       |
+| gender     | varchar(25) | YES  |     | NULL    |       |
+| city       | varchar(50) | YES  |     | NULL    |       |
+| age        | int(11)     | YES  |     | NULL    |       |
+| course     | varchar(25) | YES  |     | NULL    |       |
+| marks      | int(5)      | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+8 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> alter table student add PRIMARY_KEY (STUDENT_ID)
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '(STUDENT_ID)' at line 1
+MariaDB [mytestdb]> alter table student add PRIMARY KEY (STUDENT_ID);
+Query OK, 0 rows affected (0.27 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [mytestdb]> desc student;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| student_id | int(6)      | NO   | PRI | NULL    |       |
+| firstname  | varchar(25) | YES  |     | NULL    |       |
+| lastname   | varchar(25) | YES  |     | NULL    |       |
+| gender     | varchar(25) | YES  |     | NULL    |       |
+| city       | varchar(50) | YES  |     | NULL    |       |
+| age        | int(11)     | YES  |     | NULL    |       |
+| course     | varchar(25) | YES  |     | NULL    |       |
+| marks      | int(5)      | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+8 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> alter table student modify student_id int(6) AUTO_INCREMENT;
+Query OK, 5 rows affected (0.59 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+MariaDB [mytestdb]> desc student;
++------------+-------------+------+-----+---------+----------------+
+| Field      | Type        | Null | Key | Default | Extra          |
++------------+-------------+------+-----+---------+----------------+
+| student_id | int(6)      | NO   | PRI | NULL    | auto_increment |
+| firstname  | varchar(25) | YES  |     | NULL    |                |
+| lastname   | varchar(25) | YES  |     | NULL    |                |
+| gender     | varchar(25) | YES  |     | NULL    |                |
+| city       | varchar(50) | YES  |     | NULL    |                |
+| age        | int(11)     | YES  |     | NULL    |                |
+| course     | varchar(25) | YES  |     | NULL    |                |
+| marks      | int(5)      | YES  |     | NULL    |                |
++------------+-------------+------+-----+---------+----------------+
+8 rows in set (0.00 sec)
+
+MariaDB [mytestdb]>

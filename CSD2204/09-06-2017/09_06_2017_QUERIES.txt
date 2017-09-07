@@ -1,0 +1,90 @@
+STUDENT TABLE
+----------------------------------
+	CREATE TABLE
+----------------------------------
+CREATE TABLE STUDENT
+(
+student_id INT(5),
+firstname VARCHAR(25),
+lastname VARCHAR(25),
+gender  VARCHAR(25),
+age     INT,
+course VARCHAR(25)
+);
+
+----------------------------------
+	CREATE TABLE WITH SQL KEYWORD
+----------------------------------
+CREATE TABLE t
+(
+SHOW INT(5)
+);
+
+
+CREATE TABLE t
+(
+`SHOW` INT(5)
+);
+
+----------------------------------
+	INSERT TABLE SYNTAX 1
+----------------------------------
+INSERT INTO STUDENT
+VALUES (
+1,'KALPANA','RAMANAN','FEMALE','27','MADT'
+);
+
+
+----------------------------------
+	INSERT TABLE SYNTAX 2
+----------------------------------
+INSERT STUDENT 
+VALUES
+(
+2,'SAI','PRAVEEN','MALE','27','BIG DATA'
+);
+
+----------------------------------
+	INSERT TABLE SYNTAX 3
+----------------------------------
+INSERT INTO STUDENT(STUDENT_ID,FIRSTNAME,LASTNAME,GENDER,AGE,COURSE) 
+VALUES(
+3,'MANOCH','RICHARD','MALE','29','MIOS'
+);
+
+INSERT STUDENT 
+VALUES
+(
+4,'SARANYA','SEKAR','FEMALE','21','BIG DATA'
+);
+
+INSERT STUDENT 
+VALUES
+(
+5,'NIMISHA','RAKASH','FEMALE','25','DATA'
+);
+
+----------------------------------
+	SELECT TABLE 
+----------------------------------
+
+
+SELECT * FROM STUDENT;
+SELECT STUDENT_ID,FIRSTNAME FROM STUDENT;
+SELECT * FROM STUDENT WHERE STUDENT_ID = 2;
+SELECT * FROM STUDENT WHERE STUDENT_ID < 2;
+
+----------------------------------
+	SELECT TABLE WITH LIMIT
+----------------------------------
+
+SELECT * FROM STUDENT LIMIT 2;
+SELECT TOP 3 PERCENT * FROM STUDENT;
+
+----------------------------------
+	SELECT TABLE WITH like
+----------------------------------
+SELECT * FROM STUDENT
+WHERE 
+FIRSTNAME LIKE 'S%';
+
