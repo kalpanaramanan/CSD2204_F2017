@@ -1,0 +1,6 @@
+1	Odeon	5
+2	Imperial	1
+3	Majestic	NULL
+4	Royale	6
+5	Paraiso	3
+6	Nickelodeon	NULL
