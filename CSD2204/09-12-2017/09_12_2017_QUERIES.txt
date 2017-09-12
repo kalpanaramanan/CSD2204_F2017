@@ -1,0 +1,693 @@
+
+Setting environment for using XAMPP for Windows.
+715368@203-IMAC13 c:\xampp
+# mysql -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 2
+Server version: 10.1.21-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2016, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> USE mytestdb;
+Database changed
+MariaDB [mytestdb]> SELECT * FROM products;
++------+-----------------+-------+--------------+
+| Code | Name            | Price | Manufacturer |
++------+-----------------+-------+--------------+
+|    1 | Hard drive      |   240 |            5 |
+|    2 | Memory          |   120 |            6 |
+|    3 | ZIP drive       |   150 |            4 |
+|    4 | Floppy disk     |     5 |            6 |
+|    5 | Monitor         |   240 |            1 |
+|    6 | DVD drive       |   180 |            2 |
+|    7 | CD drive        |    90 |            2 |
+|    8 | Printer         |   270 |            3 |
+|    9 | Toner cartridge |    66 |            3 |
+|   10 | DVD burner      |   180 |            2 |
+|   11 | USB Driver      |    40 |         NULL |
+|   12 | USB Driver      |    54 |         NULL |
++------+-----------------+-------+--------------+
+12 rows in set (0.03 sec)
+
+MariaDB [mytestdb]> SELECT COUNT(*) FROM products GROUP BY manufacturer;
++----------+
+| COUNT(*) |
++----------+
+|        2 |
+|        1 |
+|        3 |
+|        2 |
+|        1 |
+|        1 |
+|        2 |
++----------+
+7 rows in set (0.02 sec)
+
+MariaDB [mytestdb]> SELECT COUNT(*),manufacturer FROM products GROUP BY manufacturer;
++----------+--------------+
+| COUNT(*) | manufacturer |
++----------+--------------+
+|        2 |         NULL |
+|        1 |            1 |
+|        3 |            2 |
+|        2 |            3 |
+|        1 |            4 |
+|        1 |            5 |
+|        2 |            6 |
++----------+--------------+
+7 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * manufacturer;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'manufacturer' at line 1
+MariaDB [mytestdb]> SELECT * manufacturers;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'manufacturers' at line 1
+MariaDB [mytestdb]> SELECT * FROM manufacturers;
++------+-----------------+
+| CODE | NAME            |
++------+-----------------+
+|    1 | Sony            |
+|    2 | Creative Labs   |
+|    3 | Hewlett-Packard |
+|    4 | Iomega          |
+|    5 | Fujitsu         |
+|    6 | Winchester      |
++------+-----------------+
+6 rows in set (0.01 sec)
+
+MariaDB [mytestdb]> SELECT COUNT(*),manufacturer FROM products as p inner join manufactuerers m ON m.code=p.manufacturer  GROUP BY manufacturer;
+ERROR 1146 (42S02): Table 'mytestdb.manufactuerers' doesn't exist
+MariaDB [mytestdb]> SELECT COUNT(*),manufacturer FROM products as p inner join manufacturers m ON m.code=p.manufacturer  GROUP BY manufacturer;
++----------+--------------+
+| COUNT(*) | manufacturer |
++----------+--------------+
+|        1 |            1 |
+|        3 |            2 |
+|        2 |            3 |
+|        1 |            4 |
+|        1 |            5 |
+|        2 |            6 |
++----------+--------------+
+6 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT COUNT(*),p.manufacturer,m.code FROM products as p inner join manufacturers m ON m.code=p.manufacturer  GROUP BY manufacturer;
++----------+--------------+------+
+| COUNT(*) | manufacturer | code |
++----------+--------------+------+
+|        1 |            1 |    1 |
+|        3 |            2 |    2 |
+|        2 |            3 |    3 |
+|        1 |            4 |    4 |
+|        1 |            5 |    5 |
+|        2 |            6 |    6 |
++----------+--------------+------+
+6 rows in set (0.05 sec)
+
+MariaDB [mytestdb]> SELECT COUNT(*),p.manufacturer,m.name FROM products as p inner join manufacturers m ON m.code=p.manufacturer  GROUP BY manufacturer;
++----------+--------------+-----------------+
+| COUNT(*) | manufacturer | name            |
++----------+--------------+-----------------+
+|        1 |            1 | Sony            |
+|        3 |            2 | Creative Labs   |
+|        2 |            3 | Hewlett-Packard |
+|        1 |            4 | Iomega          |
+|        1 |            5 | Fujitsu         |
+|        2 |            6 | Winchester      |
++----------+--------------+-----------------+
+6 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT COUNT(*),p.manufacturer,m.name FROM products as p inner join manufacturers m ON m.code=p.manufacturer  GROUP BY manufacturer having manufacturer < 2;
++----------+--------------+------+
+| COUNT(*) | manufacturer | name |
++----------+--------------+------+
+|        1 |            1 | Sony |
++----------+--------------+------+
+1 row in set (0.05 sec)
+
+MariaDB [mytestdb]> SELECT COUNT(*),p.manufacturer,m.name FROM products as p inner join manufacturers m ON m.code=p.manufacturer  GROUP BY manufacturer having manufacturer > 2;
++----------+--------------+-----------------+
+| COUNT(*) | manufacturer | name            |
++----------+--------------+-----------------+
+|        2 |            3 | Hewlett-Packard |
+|        1 |            4 | Iomega          |
+|        1 |            5 | Fujitsu         |
+|        2 |            6 | Winchester      |
++----------+--------------+-----------------+
+4 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT COUNT(*),p.manufacturer,m.name FROM products as p inner join manufacturers m ON m.code=p.manufacturer  GROUP BY manufacturer having count(manufacturer) > 2;
++----------+--------------+---------------+
+| COUNT(*) | manufacturer | name          |
++----------+--------------+---------------+
+|        3 |            2 | Creative Labs |
++----------+--------------+---------------+
+1 row in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT COUNT(*),p.manufacturer,m.name FROM products as p inner join manufacturers m ON m.code=p.manufacturer  GROUP BY manufacturer having count(*) = 2;
++----------+--------------+-----------------+
+| COUNT(*) | manufacturer | name            |
++----------+--------------+-----------------+
+|        2 |            3 | Hewlett-Packard |
+|        2 |            6 | Winchester      |
++----------+--------------+-----------------+
+2 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT COUNT(*),p.manufacturer,m.name FROM products as p inner join manufacturers m ON m.code=p.manufacturer  GROUP BY manufacturer having count(*) > 2;
++----------+--------------+---------------+
+| COUNT(*) | manufacturer | name          |
++----------+--------------+---------------+
+|        3 |            2 | Creative Labs |
++----------+--------------+---------------+
+1 row in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT COUNT(*),p.manufacturer,m.name FROM products as p inner join manufacturers m ON m.code=p.manufacturer  GROUP BY manufacturer having count(*) < 2;
++----------+--------------+---------+
+| COUNT(*) | manufacturer | name    |
++----------+--------------+---------+
+|        1 |            1 | Sony    |
+|        1 |            4 | Iomega  |
+|        1 |            5 | Fujitsu |
++----------+--------------+---------+
+3 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT COUNT(*),p.manufacturer,m.name FROM products as p inner join manufacturers m ON m.code=p.manufacturer  GROUP BY manufacturer having count(*) = 2;
++----------+--------------+-----------------+
+| COUNT(*) | manufacturer | name            |
++----------+--------------+-----------------+
+|        2 |            3 | Hewlett-Packard |
+|        2 |            6 | Winchester      |
++----------+--------------+-----------------+
+2 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT COUNT(*),p.manufacturer,m.name FROM products as p inner join manufacturers m ON m.code=p.manufacturer  GROUP BY manufacturer having manufacuterer in (2,3);
+ERROR 1054 (42S22): Unknown column 'manufacuterer' in 'having clause'
+MariaDB [mytestdb]> SELECT COUNT(*),p.manufacturer,m.name FROM products as p inner join manufacturers m ON m.code=p.manufacturer  GROUP BY manufacturer having manufacturer in (2,3);
++----------+--------------+-----------------+
+| COUNT(*) | manufacturer | name            |
++----------+--------------+-----------------+
+|        3 |            2 | Creative Labs   |
+|        2 |            3 | Hewlett-Packard |
++----------+--------------+-----------------+
+2 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * FROM manufacturers;
++------+-----------------+
+| CODE | NAME            |
++------+-----------------+
+|    1 | Sony            |
+|    2 | Creative Labs   |
+|    3 | Hewlett-Packard |
+|    4 | Iomega          |
+|    5 | Fujitsu         |
+|    6 | Winchester      |
++------+-----------------+
+6 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * FROM products;
++------+-----------------+-------+--------------+
+| Code | Name            | Price | Manufacturer |
++------+-----------------+-------+--------------+
+|    1 | Hard drive      |   240 |            5 |
+|    2 | Memory          |   120 |            6 |
+|    3 | ZIP drive       |   150 |            4 |
+|    4 | Floppy disk     |     5 |            6 |
+|    5 | Monitor         |   240 |            1 |
+|    6 | DVD drive       |   180 |            2 |
+|    7 | CD drive        |    90 |            2 |
+|    8 | Printer         |   270 |            3 |
+|    9 | Toner cartridge |    66 |            3 |
+|   10 | DVD burner      |   180 |            2 |
+|   11 | USB Driver      |    40 |         NULL |
+|   12 | USB Driver      |    54 |         NULL |
++------+-----------------+-------+--------------+
+12 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT manufacturer,COUNT(*) FROM products WHERE price > 100 GROUP by manufacturer;
++--------------+----------+
+| manufacturer | COUNT(*) |
++--------------+----------+
+|            1 |        1 |
+|            2 |        2 |
+|            3 |        1 |
+|            4 |        1 |
+|            5 |        1 |
+|            6 |        1 |
++--------------+----------+
+6 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT manufacturer,COUNT(*),AVG(price) FROM products WHERE price > 100 GROUP by manufacturer;
++--------------+----------+------------+
+| manufacturer | COUNT(*) | AVG(price) |
++--------------+----------+------------+
+|            1 |        1 |   240.0000 |
+|            2 |        2 |   180.0000 |
+|            3 |        1 |   270.0000 |
+|            4 |        1 |   150.0000 |
+|            5 |        1 |   240.0000 |
+|            6 |        1 |   120.0000 |
++--------------+----------+------------+
+6 rows in set (0.03 sec)
+
+MariaDB [mytestdb]> SELECT manufacturer,COUNT(*),AVG(price) FROM products WHERE price > 100 GROUP by manufacturer HAVING avg(price) > 200;
++--------------+----------+------------+
+| manufacturer | COUNT(*) | AVG(price) |
++--------------+----------+------------+
+|            1 |        1 |   240.0000 |
+|            3 |        1 |   270.0000 |
+|            5 |        1 |   240.0000 |
++--------------+----------+------------+
+3 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * FROM manufacturers;
++------+-----------------+
+| CODE | NAME            |
++------+-----------------+
+|    1 | Sony            |
+|    2 | Creative Labs   |
+|    3 | Hewlett-Packard |
+|    4 | Iomega          |
+|    5 | Fujitsu         |
+|    6 | Winchester      |
++------+-----------------+
+6 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * FROM products;
++------+-----------------+-------+--------------+
+| Code | Name            | Price | Manufacturer |
++------+-----------------+-------+--------------+
+|    1 | Hard drive      |   240 |            5 |
+|    2 | Memory          |   120 |            6 |
+|    3 | ZIP drive       |   150 |            4 |
+|    4 | Floppy disk     |     5 |            6 |
+|    5 | Monitor         |   240 |            1 |
+|    6 | DVD drive       |   180 |            2 |
+|    7 | CD drive        |    90 |            2 |
+|    8 | Printer         |   270 |            3 |
+|    9 | Toner cartridge |    66 |            3 |
+|   10 | DVD burner      |   180 |            2 |
+|   11 | USB Driver      |    40 |         NULL |
+|   12 | USB Driver      |    54 |         NULL |
++------+-----------------+-------+--------------+
+12 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT manufacturer,COUNT(*),AVG(price) FROM products WHERE price > 100 GROUP by manufacturer HAVING avg(price) > 200;
++--------------+----------+------------+
+| manufacturer | COUNT(*) | AVG(price) |
++--------------+----------+------------+
+|            1 |        1 |   240.0000 |
+|            3 |        1 |   270.0000 |
+|            5 |        1 |   240.0000 |
++--------------+----------+------------+
+3 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT manufacturer,COUNT(*),AVG(price) FROM products WHERE price > 100 and manufacturer = 1 GROUP by manufacturer HAVING avg(price) > 200;
++--------------+----------+------------+
+| manufacturer | COUNT(*) | AVG(price) |
++--------------+----------+------------+
+|            1 |        1 |   240.0000 |
++--------------+----------+------------+
+1 row in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT manufacturer,COUNT(*),AVG(price) FROM products WHERE price > 100 and manufacturer = 5 GROUP by manufacturer HAVING avg(price) > 200;
++--------------+----------+------------+
+| manufacturer | COUNT(*) | AVG(price) |
++--------------+----------+------------+
+|            5 |        1 |   240.0000 |
++--------------+----------+------------+
+1 row in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT manufacturer,COUNT(*),AVG(price) FROM products WHERE price > 100 and name like '%drive%' GROUP by manufacturer HAVING avg(price) > 200;
++--------------+----------+------------+
+| manufacturer | COUNT(*) | AVG(price) |
++--------------+----------+------------+
+|            5 |        1 |   240.0000 |
++--------------+----------+------------+
+1 row in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT manufacturer,COUNT(*),AVG(price) FROM products WHERE price > 100  GROUP by manufacturer HAVING avg(price) > 200 and manufacturer = 5;
++--------------+----------+------------+
+| manufacturer | COUNT(*) | AVG(price) |
++--------------+----------+------------+
+|            5 |        1 |   240.0000 |
++--------------+----------+------------+
+1 row in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT manufacturer,COUNT(*),AVG(price) FROM products WHERE price > 100  GROUP by manufacturer HAVING avg(price) > 200 and name like '%drive%';
+ERROR 1054 (42S22): Unknown column 'name' in 'having clause'
+MariaDB [mytestdb]> SELECT manufacturer,COUNT(*),AVG(price),name FROM products WHERE price > 100  GROUP by manufacturer HAVING avg(price) > 200 and name like '%drive%';
++--------------+----------+------------+------------+
+| manufacturer | COUNT(*) | AVG(price) | name       |
++--------------+----------+------------+------------+
+|            5 |        1 |   240.0000 | Hard drive |
++--------------+----------+------------+------------+
+1 row in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT manufacturer,COUNT(*),AVG(price),name FROM products   GROUP by manufacturer HAVING avg(price) > 200 and name like '%drive%';
++--------------+----------+------------+------------+
+| manufacturer | COUNT(*) | AVG(price) | name       |
++--------------+----------+------------+------------+
+|            5 |        1 |   240.0000 | Hard drive |
++--------------+----------+------------+------------+
+1 row in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT manufacturer,COUNT(*),AVG(price),name FROM products   GROUP by manufacturer HAVING avg(price) > 200;
++--------------+----------+------------+------------+
+| manufacturer | COUNT(*) | AVG(price) | name       |
++--------------+----------+------------+------------+
+|            1 |        1 |   240.0000 | Monitor    |
+|            5 |        1 |   240.0000 | Hard drive |
++--------------+----------+------------+------------+
+2 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT manufacturer,COUNT(*),AVG(price),name FROM products   GROUP by manufacturer HAVING avg(price) > 200 and name like '%drive%';
++--------------+----------+------------+------------+
+| manufacturer | COUNT(*) | AVG(price) | name       |
++--------------+----------+------------+------------+
+|            5 |        1 |   240.0000 | Hard drive |
++--------------+----------+------------+------------+
+1 row in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT name FROM products WHERE name = 'mointor' INTO @v;
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+MariaDB [mytestdb]> show @v;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '@v' at line 1
+MariaDB [mytestdb]> select @v;
++------+
+| @v   |
++------+
+| NULL |
++------+
+1 row in set (0.00 sec)
+
+MariaDB [mytestdb]> select * from products;
++------+-----------------+-------+--------------+
+| Code | Name            | Price | Manufacturer |
++------+-----------------+-------+--------------+
+|    1 | Hard drive      |   240 |            5 |
+|    2 | Memory          |   120 |            6 |
+|    3 | ZIP drive       |   150 |            4 |
+|    4 | Floppy disk     |     5 |            6 |
+|    5 | Monitor         |   240 |            1 |
+|    6 | DVD drive       |   180 |            2 |
+|    7 | CD drive        |    90 |            2 |
+|    8 | Printer         |   270 |            3 |
+|    9 | Toner cartridge |    66 |            3 |
+|   10 | DVD burner      |   180 |            2 |
+|   11 | USB Driver      |    40 |         NULL |
+|   12 | USB Driver      |    54 |         NULL |
++------+-----------------+-------+--------------+
+12 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT name FROM products WHERE name = 'mointor' INTO @v;
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+MariaDB [mytestdb]> SELECT name FROM products WHERE name = 'monitor' INTO @v;
+Query OK, 1 row affected (0.01 sec)
+
+MariaDB [mytestdb]> select @v;
++---------+
+| @v      |
++---------+
+| Monitor |
++---------+
+1 row in set (0.01 sec)
+
+MariaDB [mytestdb]> SELECT @n := name FROM products WHERE name = 'mointor' ;
+Empty set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT @n := name FROM products WHERE name = 'monitor' ;
++------------+
+| @n := name |
++------------+
+| Monitor    |
++------------+
+1 row in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT @n;
++---------+
+| @n      |
++---------+
+| Monitor |
++---------+
+1 row in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT name,@tprice := price  FROM products WHERE name = 'monitor' ;
++---------+------------------+
+| name    | @tprice := price |
++---------+------------------+
+| Monitor |              240 |
++---------+------------------+
+1 row in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT @tprice;
++---------+
+| @tprice |
++---------+
+|     240 |
++---------+
+1 row in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT name,@tprice := price  FROM products WHERE name = 'monitor' INTO OUTFILE 'C:/Users/715368/Downloads/q1.txt';
+Query OK, 1 row affected (0.00 sec)
+
+MariaDB [mytestdb]> SELECT CODE FROM PRODUCTS
+    -> UNION
+    -> SELECT CODE FROM MANUFACTURERES;
+ERROR 1146 (42S02): Table 'mytestdb.manufactureres' doesn't exist
+MariaDB [mytestdb]> SELECT CODE FROM MANUFACTURERS;
++------+
+| CODE |
++------+
+|    1 |
+|    2 |
+|    3 |
+|    4 |
+|    5 |
+|    6 |
++------+
+6 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT CODE FROM PRODUCTS
+    -> UNION
+    -> SELECT CODE FROM MANUFACTURERES;
+ERROR 1146 (42S02): Table 'mytestdb.manufactureres' doesn't exist
+MariaDB [mytestdb]> SELECT CODE FROM PRODUCTS
+    -> UNION
+    -> SELECT CODE FROM MANUFACTURERS;
++------+
+| CODE |
++------+
+|   11 |
+|   12 |
+|    5 |
+|    6 |
+|    7 |
+|   10 |
+|    8 |
+|    9 |
+|    3 |
+|    1 |
+|    2 |
+|    4 |
++------+
+12 rows in set (0.03 sec)
+
+MariaDB [mytestdb]> SELECT CODE FROM PRODUCTS UNION ALL SELECT CODE FROM MANUFACTURERS;
++------+
+| CODE |
++------+
+|   11 |
+|   12 |
+|    5 |
+|    6 |
+|    7 |
+|   10 |
+|    8 |
+|    9 |
+|    3 |
+|    1 |
+|    2 |
+|    4 |
+|    1 |
+|    2 |
+|    3 |
+|    4 |
+|    5 |
+|    6 |
++------+
+18 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT CODE FROM PRODUCTS UNION ALL SELECT NAME FROM MANUFACTURERS;
++-----------------+
+| CODE            |
++-----------------+
+| 11              |
+| 12              |
+| 5               |
+| 6               |
+| 7               |
+| 10              |
+| 8               |
+| 9               |
+| 3               |
+| 1               |
+| 2               |
+| 4               |
+| Sony            |
+| Creative Labs   |
+| Hewlett-Packard |
+| Iomega          |
+| Fujitsu         |
+| Winchester      |
++-----------------+
+18 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT CODE FROM PRODUCTS UNION  SELECT NAME FROM MANUFACTURERS;
++-----------------+
+| CODE            |
++-----------------+
+| 11              |
+| 12              |
+| 5               |
+| 6               |
+| 7               |
+| 10              |
+| 8               |
+| 9               |
+| 3               |
+| 1               |
+| 2               |
+| 4               |
+| Sony            |
+| Creative Labs   |
+| Hewlett-Packard |
+| Iomega          |
+| Fujitsu         |
+| Winchester      |
++-----------------+
+18 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT CODE FROM PRODUCTS INTERSECT  SELECT NAME FROM MANUFACTURERS;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'SELECT NAME FROM MANUFACTURERS' at line 1
+MariaDB [mytestdb]> SELECT CODE FROM PRODUCTS INTERSECT SELECT MANUFACTURER FROM MANUFACTURERS;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'SELECT MANUFACTURER FROM MANUFACTURERS' at line 1
+MariaDB [mytestdb]> SELECT MANUFACTURER FROM PRODUCTS INTERSECT SELECT CODE FROM MANUFACTURERS;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'SELECT CODE FROM MANUFACTURERS' at line 1
+MariaDB [mytestdb]>  SELECT CODE FROM MANUFACTURERS;
++------+
+| CODE |
++------+
+|    1 |
+|    2 |
+|    3 |
+|    4 |
+|    5 |
+|    6 |
++------+
+6 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT MANUFACTURER FROM PRODUCTS;
++--------------+
+| MANUFACTURER |
++--------------+
+|         NULL |
+|         NULL |
+|            1 |
+|            2 |
+|            2 |
+|            2 |
+|            3 |
+|            3 |
+|            4 |
+|            5 |
+|            6 |
+|            6 |
++--------------+
+12 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT MANUFACTURER FROM PRODUCTS INTERSECT SELECT CODE FROM MANUFACTURERS;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'SELECT CODE FROM MANUFACTURERS' at line 1
+MariaDB [mytestdb]> SELECT code FROM manufacturers INTERSECT SELECT manufacturer from products;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'SELECT manufacturer from products' at line 1
+MariaDB [mytestdb]> desc manufacturers;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| CODE  | int(3)      | NO   | PRI | NULL    |       |
+| NAME  | varchar(50) | NO   |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> desc products;
++--------------+---------------+------+-----+---------+-------+
+| Field        | Type          | Null | Key | Default | Extra |
++--------------+---------------+------+-----+---------+-------+
+| Code         | int(11)       | NO   | PRI | NULL    |       |
+| Name         | varchar(255)  | NO   |     | NULL    |       |
+| Price        | decimal(10,0) | NO   |     | NULL    |       |
+| Manufacturer | int(11)       | YES  | MUL | NULL    |       |
++--------------+---------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT DISTINCT(name) FROM manufacturers WHERE code = (SELECT code FROM products WHERE price > 200);
+ERROR 1242 (21000): Subquery returns more than 1 row
+MariaDB [mytestdb]> SELECT DISTINCT(name) FROM manufacturers WHERE code in (SELECT code FROM products WHERE price > 200);
++---------+
+| name    |
++---------+
+| Sony    |
+| Fujitsu |
++---------+
+2 rows in set (0.02 sec)
+
+MariaDB [mytestdb]> SELECT DISTINCT(name) FROM manufacturers WHERE code in (SELECT manufacturer FROM products WHERE price > 200);
++-----------------+
+| name            |
++-----------------+
+| Sony            |
+| Hewlett-Packard |
+| Fujitsu         |
++-----------------+
+3 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> select * from manufacturers;
++------+-----------------+
+| CODE | NAME            |
++------+-----------------+
+|    1 | Sony            |
+|    2 | Creative Labs   |
+|    3 | Hewlett-Packard |
+|    4 | Iomega          |
+|    5 | Fujitsu         |
+|    6 | Winchester      |
++------+-----------------+
+6 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * from manufacturers where code IN (SELECT manufacturer FROM products where name LIKE '%drive%') ;
++------+---------------+
+| CODE | NAME          |
++------+---------------+
+|    2 | Creative Labs |
+|    4 | Iomega        |
+|    5 | Fujitsu       |
++------+---------------+
+3 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * from products WHERE price = (SELECT min(price) from products);
++------+-------------+-------+--------------+
+| Code | Name        | Price | Manufacturer |
++------+-------------+-------+--------------+
+|    4 | Floppy disk |     5 |            6 |
++------+-------------+-------+--------------+
+1 row in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * from products WHERE price = (SELECT min(price) from products);
++------+-------------+-------+--------------+
+| Code | Name        | Price | Manufacturer |
++------+-------------+-------+--------------+
+|    4 | Floppy disk |     5 |            6 |
++------+-------------+-------+--------------+
+1 row in set (0.00 sec)
