@@ -1,0 +1,455 @@
+MariaDB [mytestdb]> show tables;
++--------------------+
+| Tables_in_mytestdb |
++--------------------+
+| locations          |
+| manufacturers      |
+| pet                |
+| pieces             |
+| products           |
+| providers          |
+| provides           |
+| student            |
+| t1                 |
++--------------------+
+9 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> select * from Pieces
+    -> ;
++------+----------+
+| Code | Name     |
++------+----------+
+|    1 | Sprocket |
+|    2 | Screw    |
+|    3 | Nut      |
+|    4 | Bolt     |
++------+----------+
+4 rows in set (0.06 sec)
+
+MariaDB [mytestdb]> select * from Providers;
++------+----------------------+
+| Code | Name                 |
++------+----------------------+
+| HAL  | Clarke Enterprises   |
+| RBT  | Susan Calvin Corp.   |
+| TNBC | Skellington Supplies |
++------+----------------------+
+3 rows in set (0.05 sec)
+
+MariaDB [mytestdb]> select * from provides; 
++------+-------+----------+-------+
+| Code | Piece | Provider | Price |
++------+-------+----------+-------+
+|    1 |     1 | HAL      | 10.00 |
+|    2 |     1 | RBT      | 15.00 |
+|    3 |     2 | HAL      | 20.00 |
+|    4 |     2 | RBT      | 15.00 |
+|    5 |     2 | TNBC     | 14.00 |
+|    6 |     3 | RBT      | 50.00 |
+|    7 |     3 | TNBC     | 45.00 |
+|    8 |     4 | HAL      |  5.00 |
+|    9 |     4 | RBT      |  7.00 |
++------+-------+----------+-------+
+9 rows in set (0.05 sec)
+
+MariaDB [mytestdb]> SELECT Name FROM pieces;
++----------+
+| Name     |
++----------+
+| Sprocket |
+| Screw    |
+| Nut      |
+| Bolt     |
++----------+
+4 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT * FROM providers;
++------+----------------------+
+| Code | Name                 |
++------+----------------------+
+| HAL  | Clarke Enterprises   |
+| RBT  | Susan Calvin Corp.   |
+| TNBC | Skellington Supplies |
++------+----------------------+
+3 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT pi.Name,AVG(pr.Price) from Pieces as pi INNER JOIN Provides as pr ON pr.Piece = pi.code;
++----------+---------------+
+| Name     | AVG(pr.Price) |
++----------+---------------+
+| Sprocket |     20.111111 |
++----------+---------------+
+1 row in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT pi.Name,AVG(pr.Price) from Pieces as pi INNER JOIN Provides as pr ON pr.Piece = pi.code GROUP BY pi.code;
++----------+---------------+
+| Name     | AVG(pr.Price) |
++----------+---------------+
+| Sprocket |     12.500000 |
+| Screw    |     16.333333 |
+| Nut      |     47.500000 |
+| Bolt     |      6.000000 |
++----------+---------------+
+4 rows in set (0.01 sec)
+
+MariaDB [mytestdb]> SELECT DISTINCT Provider FROM Providers WHERE Piece = 1;
+ERROR 1054 (42S22): Unknown column 'Provider' in 'field list'
+MariaDB [mytestdb]> SELECT DISTINCT Provider FROM Provides WHERE Piece = 1;
++----------+
+| Provider |
++----------+
+| HAL      |
+| RBT      |
++----------+
+2 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT pi.Name from Pieces as pi INNER JOIN Provides as pr ON pr.Piece = pi.code  INNER JOIN as Providers as prs ON prs.code = pr.provider AND prs.Code = 'HAL';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'as Providers as prs ON prs.code = pr.provider AND prs.Code = 'HAL'' at line 1
+MariaDB [mytestdb]> SELECT pi.Name from Pieces as pi INNER JOIN Provides as pr ON pr.Piece = pi.code  INNER JOIN as Providers as prs ON prs.code = pr.provider ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'as Providers as prs ON prs.code = pr.provider' at line 1
+MariaDB [mytestdb]> SELECT pi.Name from Pieces as pi INNER JOIN Provides as pr ON pr.Piece = pi.code  INNER JOIN Providers as prs ON prs.code = pr.provider AND prs.Code = 'HAL';
++----------+
+| Name     |
++----------+
+| Sprocket |
+| Screw    |
+| Bolt     |
++----------+
+3 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT pi.name,prs.name,pr.priceFROM Pieces as pi INNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN  Providers as prs ON prs.code = pr.provider GROUP BY pi.nameORDER BY pr.price LIMIT 1;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'as pi INNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN  Providers as p' at line 1
+MariaDB [mytestdb]> SELECT pi.name,prs.name,pr.priceFROM Pieces as pi INNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN  Providers as prs ON prs.code = pr.provider GROUP BY pi.name
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'as pi INNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN  Providers as p' at line 1
+MariaDB [mytestdb]> SELECT pi.name,prs.name,pr.priceFROM Pieces as pi INNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN Providers as prs ON prs.code = pr.provider GROUP BY pi.nameORDER BY pr.price DESC LIMIT 1;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'as pi INNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN Providers as pr' at line 1
+MariaDB [mytestdb]> SELECT pi.name,prs.name,pr.priceFROM Pieces as pi INNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN Providers as prs ON prs.code = pr.provider ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'as pi INNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN Providers as pr' at line 1
+MariaDB [mytestdb]> SELECT pi.name,prs.name,pr.price FROM Pieces as piINNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN Providers as prs ON prs.code = pr.provider GROUP BY pi.nameORDER BY pr.price DESC LIMIT 1;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'BY pr.price DESC LIMIT 1' at line 1
+MariaDB [mytestdb]> SELECT pi.name,prs.name,pr.price FROM Pieces as piINNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN Providers as prs ON prs.code = pr.provider GROUP BY pi.name;
+ERROR 1054 (42S22): Unknown column 'pi.name' in 'field list'
+MariaDB [mytestdb]> SELECT pi.name,prs.name,MAX(pr.price) as Price FROM Pieces as piINNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN Providers as prs ON prs.code = pr.provider ;
+ERROR 1054 (42S22): Unknown column 'pi.name' in 'field list'
+MariaDB [mytestdb]> SELECT pi.name,prs.name,pr.price FROM Pieces as piINNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN Providers as prs ON prs.code = pr.provider ;
+ERROR 1054 (42S22): Unknown column 'pi.name' in 'field list'
+MariaDB [mytestdb]> SELECT pi.Name,prs.name,pr.price FROM Pieces as piINNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN Providers as prs ON prs.code = pr.provider ;
+ERROR 1054 (42S22): Unknown column 'pi.Name' in 'field list'
+MariaDB [mytestdb]> SELECT pi.Name FROM Pieces as pi INNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN  Providers as prs ON prs.code = pr.provider AND prs.Code = 'HAL';
++----------+
+| Name     |
++----------+
+| Sprocket |
+| Screw    |
+| Bolt     |
++----------+
+3 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT pii.name,prs.name,pr.price FROM Pieces as piiINNER JOIN Provides as pr ON pr.Piece = pii.code INNER JOIN Providers as prs ON prs.code = pr.provider;
+ERROR 1054 (42S22): Unknown column 'pii.name' in 'field list'
+MariaDB [mytestdb]> SELECT pii.name,prs.name,pr.price FROM Pieces as piiINNER JOIN Provides as pr ON pr.Piece = pii.code INNER JOIN Providers as prs ON prs.code = pr.provider;
+ERROR 1054 (42S22): Unknown column 'pii.name' in 'field list'
+MariaDB [mytestdb]> SELECT pi.Name,pr.name FROM Pieces as pi INNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN  Providers as prs ON prs.code = pr.provider AND prs.Code = 'HAL';
+ERROR 1054 (42S22): Unknown column 'pr.name' in 'field list'
+MariaDB [mytestdb]> SELECT pi.Name,pr.code FROM Pieces as pi INNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN  Providers as prs ON prs.code = pr.provider AND prs.Code = 'HAL';
++----------+------+
+| Name     | code |
++----------+------+
+| Sprocket |    1 |
+| Screw    |    3 |
+| Bolt     |    8 |
++----------+------+
+3 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT pi.Name FROM Pieces as pi INNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN  Providers as prs ON prs.code = pr.provider ;
++----------+
+| Name     |
++----------+
+| Sprocket |
+| Sprocket |
+| Screw    |
+| Screw    |
+| Screw    |
+| Nut      |
+| Nut      |
+| Bolt     |
+| Bolt     |
++----------+
+9 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT pi.Name FROM Pieces as pi INNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN  Providers as prs ON prs.code = pr.provider INNER JOIN Providers as prs ON prs.code = pr.provider ;
+ERROR 1066 (42000): Not unique table/alias: 'prs'
+MariaDB [mytestdb]> Not unique table/alias: 'prs';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'Not unique table/alias: 'prs'' at line 1
+MariaDB [mytestdb]> SELECT pi.name,prs.name,pr.price FROM Pieces as piINNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN Providers as prs ON prs.code = pr.provider ;
+ERROR 1054 (42S22): Unknown column 'pi.name' in 'field list'
+MariaDB [mytestdb]> SELECT * FROM Pieces as piINNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN Providers as prs ON prs.code = pr.provider ;
+ERROR 1054 (42S22): Unknown column 'pi.code' in 'on clause'
+MariaDB [mytestdb]> SELECT pi.Name FROM Pieces as pi INNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN  Providers as prs ON prs.code = pr.provider;
++----------+
+| Name     |
++----------+
+| Sprocket |
+| Sprocket |
+| Screw    |
+| Screw    |
+| Screw    |
+| Nut      |
+| Nut      |
+| Bolt     |
+| Bolt     |
++----------+
+9 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT pi.Name FROM Pieces as pi INNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN  Providers as prs ON prs.code = pr.provider INNER JOIN Providers as prs ON prs.code = pr.provider ;
+ERROR 1066 (42000): Not unique table/alias: 'prs'
+MariaDB [mytestdb]> SELECT * FROM Pieces as pi INNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN  Providers as prs ON prs.code = pr.provider ;
++------+----------+------+-------+----------+-------+------+----------------------+
+| Code | Name     | Code | Piece | Provider | Price | Code | Name                 |
++------+----------+------+-------+----------+-------+------+----------------------+
+|    1 | Sprocket |    1 |     1 | HAL      | 10.00 | HAL  | Clarke Enterprises   |
+|    1 | Sprocket |    2 |     1 | RBT      | 15.00 | RBT  | Susan Calvin Corp.   |
+|    2 | Screw    |    3 |     2 | HAL      | 20.00 | HAL  | Clarke Enterprises   |
+|    2 | Screw    |    4 |     2 | RBT      | 15.00 | RBT  | Susan Calvin Corp.   |
+|    2 | Screw    |    5 |     2 | TNBC     | 14.00 | TNBC | Skellington Supplies |
+|    3 | Nut      |    6 |     3 | RBT      | 50.00 | RBT  | Susan Calvin Corp.   |
+|    3 | Nut      |    7 |     3 | TNBC     | 45.00 | TNBC | Skellington Supplies |
+|    4 | Bolt     |    8 |     4 | HAL      |  5.00 | HAL  | Clarke Enterprises   |
+|    4 | Bolt     |    9 |     4 | RBT      |  7.00 | RBT  | Susan Calvin Corp.   |
++------+----------+------+-------+----------+-------+------+----------------------+
+9 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> INNER JOIN Providers as prs ON prs.code = pr.provider;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'INNER JOIN Providers as prs ON prs.code = pr.provider' at line 1
+MariaDB [mytestdb]> SELECT * FROM Pieces as pi INNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN  Providers as prs ON prs.code = pr.provider INNER JOIN Providers as prs ON prs.code = pr.provider;
+ERROR 1066 (42000): Not unique table/alias: 'prs'
+MariaDB [mytestdb]> SELECT pi.Name,prs.name,pr.price FROM Pieces as pi INNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN  Providers as prs ON prs.code = pr.provider ;
++----------+----------------------+-------+
+| Name     | name                 | price |
++----------+----------------------+-------+
+| Sprocket | Clarke Enterprises   | 10.00 |
+| Sprocket | Susan Calvin Corp.   | 15.00 |
+| Screw    | Clarke Enterprises   | 20.00 |
+| Screw    | Susan Calvin Corp.   | 15.00 |
+| Screw    | Skellington Supplies | 14.00 |
+| Nut      | Susan Calvin Corp.   | 50.00 |
+| Nut      | Skellington Supplies | 45.00 |
+| Bolt     | Clarke Enterprises   |  5.00 |
+| Bolt     | Susan Calvin Corp.   |  7.00 |
++----------+----------------------+-------+
+9 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT pi.name,prs.name,pr.price FROM Pieces as piINNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN Providers as prs ON prs.code = pr.provider;
+ERROR 1054 (42S22): Unknown column 'pi.name' in 'field list'
+MariaDB [mytestdb]> SELECT pi.Name,prs.name,pr.price FROM Pieces as piINNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN Providers as prs ON prs.code = pr.provider ;
+ERROR 1054 (42S22): Unknown column 'pi.Name' in 'field list'
+MariaDB [mytestdb]> SELECT pi.name,prs.name,pr.price FROM Pieces as piINNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN Providers as prs ON prs.code = pr.provider ;
+ERROR 1054 (42S22): Unknown column 'pi.name' in 'field list'
+MariaDB [mytestdb]> SELECT pi.name,prs.name,pr.price FROM Pieces as pi INNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN Providers as prs ON prs.code = pr.provider ;
++----------+----------------------+-------+
+| name     | name                 | price |
++----------+----------------------+-------+
+| Sprocket | Clarke Enterprises   | 10.00 |
+| Sprocket | Susan Calvin Corp.   | 15.00 |
+| Screw    | Clarke Enterprises   | 20.00 |
+| Screw    | Susan Calvin Corp.   | 15.00 |
+| Screw    | Skellington Supplies | 14.00 |
+| Nut      | Susan Calvin Corp.   | 50.00 |
+| Nut      | Skellington Supplies | 45.00 |
+| Bolt     | Clarke Enterprises   |  5.00 |
+| Bolt     | Susan Calvin Corp.   |  7.00 |
++----------+----------------------+-------+
+9 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT pi.Name,prs.name,pr.price FROM Pieces as pi INNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN Providers as prs ON prs.code = pr.provider;
++----------+----------------------+-------+
+| Name     | name                 | price |
++----------+----------------------+-------+
+| Sprocket | Clarke Enterprises   | 10.00 |
+| Sprocket | Susan Calvin Corp.   | 15.00 |
+| Screw    | Clarke Enterprises   | 20.00 |
+| Screw    | Susan Calvin Corp.   | 15.00 |
+| Screw    | Skellington Supplies | 14.00 |
+| Nut      | Susan Calvin Corp.   | 50.00 |
+| Nut      | Skellington Supplies | 45.00 |
+| Bolt     | Clarke Enterprises   |  5.00 |
+| Bolt     | Susan Calvin Corp.   |  7.00 |
++----------+----------------------+-------+
+9 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT pi.Name,prs.name,pr.price FROM Pieces as pi       INNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN Providers as prs ON prs.code = pr.provider ;
++----------+----------------------+-------+
+| Name     | name                 | price |
++----------+----------------------+-------+
+| Sprocket | Clarke Enterprises   | 10.00 |
+| Sprocket | Susan Calvin Corp.   | 15.00 |
+| Screw    | Clarke Enterprises   | 20.00 |
+| Screw    | Susan Calvin Corp.   | 15.00 |
+| Screw    | Skellington Supplies | 14.00 |
+| Nut      | Susan Calvin Corp.   | 50.00 |
+| Nut      | Skellington Supplies | 45.00 |
+| Bolt     | Clarke Enterprises   |  5.00 |
+| Bolt     | Susan Calvin Corp.   |  7.00 |
++----------+----------------------+-------+
+9 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT pi.Name FROM Pieces as piINNER JOIN Provides as pr ON pr.Piece = pi.codeINNER JOIN  Providers as prs ON prs.code = pr.provider;
+ERROR 1054 (42S22): Unknown column 'pi.Name' in 'field list'
+MariaDB [mytestdb]> SELECT pi.Name FROM Pieces as piINNER JOIN Provides as pr ON pr.Piece = pi.codeINNER JOIN Providers as prs ON prs.code = pr.provider;
+ERROR 1054 (42S22): Unknown column 'pi.Name' in 'field list'
+MariaDB [mytestdb]> SELECT pi.Name,prs.name,pr.price FROM Pieces as piINNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN Providers as prs ON prs.code = pr.provider;
+ERROR 1054 (42S22): Unknown column 'pi.Name' in 'field list'
+MariaDB [mytestdb]> SELECT pi.Name,prs.name,pr.price FROM Pieces as pi INNER JOIN Provides as pr ON pr.Piece = pi.code  INNER JOIN Providers as prs ON prs.code = pr.provider ;
++----------+----------------------+-------+
+| Name     | name                 | price |
++----------+----------------------+-------+
+| Sprocket | Clarke Enterprises   | 10.00 |
+| Sprocket | Susan Calvin Corp.   | 15.00 |
+| Screw    | Clarke Enterprises   | 20.00 |
+| Screw    | Susan Calvin Corp.   | 15.00 |
+| Screw    | Skellington Supplies | 14.00 |
+| Nut      | Susan Calvin Corp.   | 50.00 |
+| Nut      | Skellington Supplies | 45.00 |
+| Bolt     | Clarke Enterprises   |  5.00 |
+| Bolt     | Susan Calvin Corp.   |  7.00 |
++----------+----------------------+-------+
+9 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT pi.name,prs.name,MAX(pr.price) as price FROM Pieces as pi INNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN Providers as prs ON prs.code = pr.provider ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'SELECT pi.name,prs.name,MAX(pr.price) as price FROM Pieces as pi INNER JOIN Pro' at line 1
+MariaDB [mytestdb]> SELECT pi.name,prs.name,MAX(pr.price) as price FROM Pieces as pi INNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN Providers as prs ON prs.code = pr.provider ;
++----------+--------------------+-------+
+| name     | name               | price |
++----------+--------------------+-------+
+| Sprocket | Clarke Enterprises | 50.00 |
++----------+--------------------+-------+
+1 row in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT pi.name,prs.name,MAX(pr.price) as price FROM Pieces as pi INNER JOIN Provides as pr ON pr.Piece = pi.code INNER JOIN Providers as prs ON prs.code = pr.provider GROUP BY pi.code;
++----------+--------------------+-------+
+| name     | name               | price |
++----------+--------------------+-------+
+| Sprocket | Clarke Enterprises | 15.00 |
+| Screw    | Clarke Enterprises | 20.00 |
+| Nut      | Susan Calvin Corp. | 50.00 |
+| Bolt     | Clarke Enterprises |  7.00 |
++----------+--------------------+-------+
+4 rows in set (0.00 sec)
+
+MariaDB [mytestdb]>  SELECT DISTINCT Provider FROM Provides as pr where piece = (SELECT code from pieces  WHERE Piece = 1 );
+ERROR 1242 (21000): Subquery returns more than 1 row
+MariaDB [mytestdb]>  SELECT DISTINCT Provider FROM Provides as pr where piece = (SELECT DISTINCT code from pieces  WHERE Piece = 1 );
+ERROR 1242 (21000): Subquery returns more than 1 row
+MariaDB [mytestdb]> SELECT DISTINCT code from pieces  WHERE Piece = 1;
+ERROR 1054 (42S22): Unknown column 'Piece' in 'where clause'
+MariaDB [mytestdb]>  SELECT DISTINCT Provider FROM Provides where piece = (SELECT code from pieces WHERE code = 1 );
++----------+
+| Provider |
++----------+
+| HAL      |
+| RBT      |
++----------+
+2 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> INSERT INTO provides(Piece,Provider,Price) VALUES(1,'TNBC',7.00);
+Query OK, 1 row affected (0.09 sec)
+
+MariaDB [mytestdb]> SELECT * FROM provides;
++------+-------+----------+-------+
+| Code | Piece | Provider | Price |
++------+-------+----------+-------+
+|    1 |     1 | HAL      | 10.00 |
+|    2 |     1 | RBT      | 15.00 |
+|    3 |     2 | HAL      | 20.00 |
+|    4 |     2 | RBT      | 15.00 |
+|    5 |     2 | TNBC     | 14.00 |
+|    6 |     3 | RBT      | 50.00 |
+|    7 |     3 | TNBC     | 45.00 |
+|    8 |     4 | HAL      |  5.00 |
+|    9 |     4 | RBT      |  7.00 |
+|   10 |     1 | TNBC     |  7.00 |
++------+-------+----------+-------+
+10 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> UPDATE provides SET price = price + 1;
+Query OK, 10 rows affected (0.08 sec)
+Rows matched: 10  Changed: 10  Warnings: 0
+
+MariaDB [mytestdb]> SELECT * FROM provides;
++------+-------+----------+-------+
+| Code | Piece | Provider | Price |
++------+-------+----------+-------+
+|    1 |     1 | HAL      | 11.00 |
+|    2 |     1 | RBT      | 16.00 |
+|    3 |     2 | HAL      | 21.00 |
+|    4 |     2 | RBT      | 16.00 |
+|    5 |     2 | TNBC     | 15.00 |
+|    6 |     3 | RBT      | 51.00 |
+|    7 |     3 | TNBC     | 46.00 |
+|    8 |     4 | HAL      |  6.00 |
+|    9 |     4 | RBT      |  8.00 |
+|   10 |     1 | TNBC     |  8.00 |
++------+-------+----------+-------+
+10 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> DELETE FROM provides WHERE Provider = 'RBT' AND piece = 4;
+Query OK, 1 row affected (0.09 sec)
+
+MariaDB [mytestdb]> SELECT * FROM provides;
++------+-------+----------+-------+
+| Code | Piece | Provider | Price |
++------+-------+----------+-------+
+|    1 |     1 | HAL      | 11.00 |
+|    2 |     1 | RBT      | 16.00 |
+|    3 |     2 | HAL      | 21.00 |
+|    4 |     2 | RBT      | 16.00 |
+|    5 |     2 | TNBC     | 15.00 |
+|    6 |     3 | RBT      | 51.00 |
+|    7 |     3 | TNBC     | 46.00 |
+|    8 |     4 | HAL      |  6.00 |
+|   10 |     1 | TNBC     |  8.00 |
++------+-------+----------+-------+
+9 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> DELETE FROM provides WHERE Provider = 'RBT' ;
+Query OK, 3 rows affected (0.09 sec)
+
+MariaDB [mytestdb]> SELECT * FROM provides;
++------+-------+----------+-------+
+| Code | Piece | Provider | Price |
++------+-------+----------+-------+
+|    1 |     1 | HAL      | 11.00 |
+|    3 |     2 | HAL      | 21.00 |
+|    5 |     2 | TNBC     | 15.00 |
+|    7 |     3 | TNBC     | 46.00 |
+|    8 |     4 | HAL      |  6.00 |
+|   10 |     1 | TNBC     |  8.00 |
++------+-------+----------+-------+
+6 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT Name FROM Pieces as pi  WHERE EXISTS (SELECT piece FROM Provides as pr,Providers as prs  where pr.Piece = pi.code AND   prs.code = pr.provider AND prs.Code = 'HAL');
++----------+
+| Name     |
++----------+
+| Sprocket |
+| Screw    |
+| Bolt     |
++----------+
+3 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> SELECT Name FROM Pieces WHERE EXISTS (   SELECT * FROM Provides     WHERE Provider = 'HAL'       AND Piece = Pieces.Code );
++----------+
+| Name     |
++----------+
+| Sprocket |
+| Screw    |
+| Bolt     |
++----------+
+3 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> no tee;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'no tee' at line 1
+MariaDB [mytestdb]> nos tee;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'nos tee' at line 1
+MariaDB [mytestdb]> notee;
