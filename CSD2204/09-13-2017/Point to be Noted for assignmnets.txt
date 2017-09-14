@@ -1,0 +1,17 @@
+1. Title - (Lambton Database Systems) write this on header on all page
+- Group No
+- Members & Member No
+- Subject Code and Name
+- footer page numbers
+
+2.  - what did you learn
+    - what diffuclites you faced in doing this project
+	- whihc technology is used for making this ER diagram
+
+3. ER
+4. Table List
+5. Queries(Create and 5 Insert records tables in each tables)
+6. Refrences
+
+
+
