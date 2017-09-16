@@ -1,0 +1,1097 @@
+
+Setting environment for using XAMPP for Windows.
+715368@203-IMAC13 c:\xampp
+# MYSQL -U ROOT -P
+MYSQL: option '-P' requires an argument
+
+715368@203-IMAC13 c:\xampp
+#
+715368@203-IMAC13 c:\xampp
+# mysql -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 2
+Server version: 10.1.21-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2016, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> show datebases;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'datebases' at line 1
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| dbc0715368         |
+| examc0715368       |
+| information_schema |
+| mysql              |
+| mytestdb           |
+| performance_schema |
+| phpmyadmin         |
+| test               |
++--------------------+
+8 rows in set (0.01 sec)
+
+MariaDB [(none)]> use examc0715368
+Database changed
+MariaDB [examc0715368]> CREATE TABLE Employee (
+    ->   EmployeeID INTEGER PRIMARY KEY NOT NULL,
+    ->   Name TEXT NOT NULL,
+    ->   Position TEXT NOT NULL,
+    ->   Salary REAL NOT NULL,
+    ->   Remarks TEXT
+    -> );
+Query OK, 0 rows affected (0.33 sec)
+
+MariaDB [examc0715368]>
+MariaDB [examc0715368]> CREATE TABLE Planet (
+    ->   PlanetID INTEGER PRIMARY KEY NOT NULL,
+    ->   Name TEXT NOT NULL,
+    ->   Coordinates REAL NOT NULL
+    -> );
+Query OK, 0 rows affected (0.16 sec)
+
+MariaDB [examc0715368]>
+MariaDB [examc0715368]> CREATE TABLE Shipment (
+    ->   ShipmentID INTEGER PRIMARY KEY NOT NULL,
+    ->   Date TEXT,
+    ->   Manager INTEGER NOT NULL
+    ->     CONSTRAINT fk_Employee_EmployeeID REFERENCES Employee(EmployeeID),
+    ->   Planet INTEGER NOT NULL
+    ->     CONSTRAINT fk_Planet_PlanetID REFERENCES Planet(PlanetID)
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'CONSTRAINT fk_Employee_EmployeeID REFERENCES Employee(EmployeeID),
+  Planet INTE' at line 5
+MariaDB [examc0715368]>
+MariaDB [examc0715368]> CREATE TABLE Has_Clearance (
+    ->   Employee INTEGER NOT NULL
+    ->     CONSTRAINT fk_Employee_EmployeeID REFERENCES Employee(EmployeeID),
+    ->   Planet INTEGER NOT NULL
+    ->     CONSTRAINT fk_Planet_PlanetID REFERENCES Planet(PlanetID),
+    ->   Level INTEGER NOT NULL,
+    ->   PRIMARY KEY(Employee, Planet)
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'CONSTRAINT fk_Employee_EmployeeID REFERENCES Employee(EmployeeID),
+  Planet INTE' at line 3
+MariaDB [examc0715368]>
+MariaDB [examc0715368]> CREATE TABLE Client (
+    ->   AccountNumber INTEGER PRIMARY KEY NOT NULL,
+    ->   Name TEXT NOT NULL
+    -> );
+Query OK, 0 rows affected (0.26 sec)
+
+MariaDB [examc0715368]>
+MariaDB [examc0715368]> CREATE TABLE Package (
+    ->   Shipment INTEGER NOT NULL
+    ->     CONSTRAINT fk_Shipment_ShipmentID REFERENCES Shipment(ShipmentID),
+    ->   PackageNumber INTEGER NOT NULL,
+    ->   Contents TEXT NOT NULL,
+    ->   Weight REAL NOT NULL,
+    ->   Sender INTEGER NOT NULL
+    ->     CONSTRAINT fk_Client_AccountNumber REFERENCES Client(AccountNumber),
+    ->   Recipient INTEGER NOT NULL
+    ->     CONSTRAINT fk_Client_AccountNumber REFERENCES Client(AccountNumber),
+    ->   PRIMARY KEY(Shipment, PackageNumber)
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'CONSTRAINT fk_Shipment_ShipmentID REFERENCES Shipment(ShipmentID),
+  PackageNumb' at line 3
+MariaDB [examc0715368]> CREATE TABLE Shipment (
+    ->   ShipmentID INTEGER PRIMARY KEY NOT NULL,
+    ->   Date TEXT,
+    ->   Manager INTEGER NOT NULL
+    ->     CONSTRAINT fk_Employee_EmployeeID REFERENCES Employee(EmployeeID),
+    ->   Planet INTEGER NOT NULL
+    ->     CONSTRAINT fk_Planet_PlanetID REFERENCES Planet(PlanetID)
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'CONSTRAINT fk_Employee_EmployeeID REFERENCES Employee(EmployeeID),
+  Planet INTE' at line 5
+MariaDB [examc0715368]> CREATE TABLE Shipment (
+    ->   ShipmentID INTEGER PRIMARY KEY NOT NULL,
+    ->   ShipmentDate Date,
+    ->   Manager INTEGER NOT NULL
+    ->     CONSTRAINT fk_Employee_EmployeeID REFERENCES Employee(EmployeeID),
+    ->   Planet INTEGER NOT NULL
+    ->     CONSTRAINT fk_Planet_PlanetID REFERENCES Planet(PlanetID)
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'CONSTRAINT fk_Employee_EmployeeID REFERENCES Employee(EmployeeID),
+  Planet INTE' at line 5
+MariaDB [examc0715368]> Dro table employee;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'Dro table employee' at line 1
+MariaDB [examc0715368]> Drop table employee;
+Query OK, 0 rows affected (0.28 sec)
+
+MariaDB [examc0715368]> drop table planet;
+Query OK, 0 rows affected (0.16 sec)
+
+MariaDB [examc0715368]> show tables;
++------------------------+
+| Tables_in_examc0715368 |
++------------------------+
+| client                 |
++------------------------+
+1 row in set (0.00 sec)
+
+MariaDB [examc0715368]> drop client;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'client' at line 1
+MariaDB [examc0715368]> drop table client;
+Query OK, 0 rows affected (0.27 sec)
+
+MariaDB [examc0715368]> CREATE TABLE Employee (
+    ->   EmployeeID INTEGER PRIMARY KEY NOT NULL,
+    ->   Name VARCHAR2(50) NOT NULL,
+    ->   Position VARCHAR2(50) NOT NULL,
+    ->   Salary FLOAT(6,2) NOT NULL,
+    ->   Remarks VARCHAR2(50)
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'VARCHAR2(50) NOT NULL,
+  Position VARCHAR2(50) NOT NULL,
+  Salary FLOAT(6,2) NOT' at line 3
+MariaDB [examc0715368]> CREATE TABLE Employee (
+    ->   EmployeeID INTEGER PRIMARY KEY NOT NULL,
+    ->   Name VARCHAR(50) NOT NULL,
+    ->   Position VARCHAR(50) NOT NULL,
+    ->   Salary FLOAT(6,2) NOT NULL,
+    ->   Remarks VARCHAR(50)
+    -> );
+Query OK, 0 rows affected (0.27 sec)
+
+MariaDB [examc0715368]> CREATE TABLE Planet (
+    ->   PlanetID INTEGER PRIMARY KEY NOT NULL,
+    ->   Name VARCHAR(50) NOT NULL,
+    ->   Coordinates FLOAT(6,2) NOT NULL
+    -> );
+Query OK, 0 rows affected (0.28 sec)
+
+MariaDB [examc0715368]> CREATE TABLE Shipment (
+    ->   ShipmentID INTEGER PRIMARY KEY NOT NULL,
+    ->   ShipmentDate Date,
+    ->   Manager INTEGER NOT NULL
+    ->     CONSTRAINT fk_Employee_EmployeeID REFERENCES Employee(EmployeeID),
+    ->   Planet INTEGER NOT NULL
+    ->     CONSTRAINT fk_Planet_PlanetID REFERENCES Planet(PlanetID)
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'CONSTRAINT fk_Employee_EmployeeID REFERENCES Employee(EmployeeID),
+  Planet INTE' at line 5
+MariaDB [examc0715368]> CREATE TABLE Shipment (
+    ->   ShipmentID INTEGER PRIMARY KEY NOT NULL,
+    ->   ShipmentDate Date,
+    ->   Manager INTEGER NOT NULL CONSTRAINT fk_Employee_EmployeeID REFERENCES Employee(EmployeeID),
+    ->   Planet INTEGER NOT NULL CONSTRAINT fk_Planet_PlanetID REFERENCES Planet(PlanetID)
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'CONSTRAINT fk_Employee_EmployeeID REFERENCES Employee(EmployeeID),
+  Planet INTE' at line 4
+MariaDB [examc0715368]> CREATE TABLE Shipment (
+    ->   ShipmentID INTEGER PRIMARY KEY NOT NULL,
+    ->   ShipmentDate Date,
+    ->   Manager INTEGER NOT NULL ,
+    ->   Planet INTEGER NOT NULL,
+    ->   FOREIGN KEY (Manager) References Employee(EmployeeID),
+    ->   FOREIGN KEY (Planet) References Planet(PlanetID)
+    -> );
+Query OK, 0 rows affected (0.27 sec)
+
+MariaDB [examc0715368]> CREATE TABLE Has_Clearance (
+    ->   Employee INTEGER NOT NULL,
+    ->   Planet INTEGER NOT NULL,
+    ->   Level INTEGER NOT NULL,
+    ->   PRIMARY KEY(Employee, Planet)
+    ->   FOREIGN KEY (Employee) References Employee(EmployeeID),
+    ->   FOREIGN KEY (Planet) References Planet(PlanetID)
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'FOREIGN KEY (Employee) References Employee(EmployeeID),
+  FOREIGN KEY (Planet) R' at line 6
+MariaDB [examc0715368]> CREATE TABLE Has_Clearance (
+    ->   Employee INTEGER NOT NULL,
+    ->   Planet INTEGER NOT NULL,
+    ->   Level INTEGER NOT NULL,
+    ->   PRIMARY KEY(Employee, Planet),
+    ->   FOREIGN KEY (Employee) References Employee(EmployeeID),
+    ->   FOREIGN KEY (Planet) References Planet(PlanetID)
+    -> );
+Query OK, 0 rows affected (0.25 sec)
+
+MariaDB [examc0715368]> CREATE TABLE Client (
+    ->   AccountNumber INTEGER PRIMARY KEY NOT NULL,
+    ->   Name VARCHAR(50) NOT NULL
+    -> );
+Query OK, 0 rows affected (0.52 sec)
+
+MariaDB [examc0715368]> CREATE TABLE Package (
+    ->   Shipment INTEGER NOT NULL REFERENCES Shipment(ShipmentID),
+    ->   PackageNumber INTEGER NOT NULL,
+    ->   Contents VARCHAR(50) NOT NULL,
+    ->   Weight FLOAT(6,2) NOT NULL,
+    ->   Sender INTEGER NOT NULL,
+    ->   Recipient INTEGER NOT NULL,
+    ->   PRIMARY KEY(Shipment, PackageNumber),
+    ->   FOREIGN KEY (Sender) References Client(AccountNumber),
+    ->   FOREIGN KEY  (Recipient) References Client(AccountNumber)
+    -> );
+Query OK, 0 rows affected (0.36 sec)
+
+MariaDB [examc0715368]> INSERT INTO Client VALUES(1, 'Zapp Brannigan');
+Query OK, 1 row affected (0.09 sec)
+
+MariaDB [examc0715368]> INSERT INTO Client VALUES(2, "Al Gore's Head");
+Query OK, 1 row affected (0.06 sec)
+
+MariaDB [examc0715368]> INSERT INTO Client VALUES(3, 'Barbados Slim');
+Query OK, 1 row affected (0.09 sec)
+
+MariaDB [examc0715368]> INSERT INTO Client VALUES(4, 'Ogden Wernstrom');
+Query OK, 1 row affected (0.05 sec)
+
+MariaDB [examc0715368]> INSERT INTO Client VALUES(5, 'Leo Wong');
+Query OK, 1 row affected (0.09 sec)
+
+MariaDB [examc0715368]> INSERT INTO Client VALUES(6, 'Lrrr');
+Query OK, 1 row affected (0.08 sec)
+
+MariaDB [examc0715368]> INSERT INTO Client VALUES(7, 'John Zoidberg');
+Query OK, 1 row affected (0.01 sec)
+
+MariaDB [examc0715368]> INSERT INTO Client VALUES(8, 'John Zoidfarb');
+Query OK, 1 row affected (0.09 sec)
+
+MariaDB [examc0715368]> INSERT INTO Client VALUES(9, 'Morbo');
+Query OK, 1 row affected (0.08 sec)
+
+MariaDB [examc0715368]> INSERT INTO Client VALUES(10, 'Judge John Whitey');
+Query OK, 1 row affected (0.05 sec)
+
+MariaDB [examc0715368]> INSERT INTO Client VALUES(11, 'Calculon');
+Query OK, 1 row affected (0.03 sec)
+
+MariaDB [examc0715368]> INSERT INTO Employee VALUES(1, 'Phillip J. Fry', 'Delivery boy', 7500.0, 'Not to be confused with the Philip J. Fry from Hovering Squid World 97a');
+Query OK, 1 row affected, 1 warning (0.03 sec)
+
+MariaDB [examc0715368]> INSERT INTO Employee VALUES(2, 'Turanga Leela', 'Captain', 10000.0, NULL);
+Query OK, 1 row affected, 1 warning (0.03 sec)
+
+MariaDB [examc0715368]> INSERT INTO Employee VALUES(3, 'Bender Bending Rodriguez', 'Robot', 7500.0, NULL);
+Query OK, 1 row affected (0.03 sec)
+
+MariaDB [examc0715368]> INSERT INTO Employee VALUES(4, 'Hubert J. Farnsworth', 'CEO', 20000.0, NULL);
+Query OK, 1 row affected, 1 warning (0.06 sec)
+
+MariaDB [examc0715368]> INSERT INTO Employee VALUES(5, 'John A. Zoidberg', 'Physician', 25.0, NULL);
+Query OK, 1 row affected (0.03 sec)
+
+MariaDB [examc0715368]> INSERT INTO Employee VALUES(6, 'Amy Wong', 'Intern', 5000.0, NULL);
+Query OK, 1 row affected (0.08 sec)
+
+MariaDB [examc0715368]> INSERT INTO Employee VALUES(7, 'Hermes Conrad', 'Bureaucrat', 10000.0, NULL);
+Query OK, 1 row affected, 1 warning (0.05 sec)
+
+MariaDB [examc0715368]> INSERT INTO Employee VALUES(8, 'Scruffy Scruffington', 'Janitor', 5000.0, NULL);
+Query OK, 1 row affected (0.05 sec)
+
+MariaDB [examc0715368]> INSERT INTO Planet VALUES(1, 'Omicron Persei 8', 89475345.3545);
+Query OK, 1 row affected, 1 warning (0.03 sec)
+
+MariaDB [examc0715368]> INSERT INTO Planet VALUES(2, 'Decapod X', 65498463216.3466);
+Query OK, 1 row affected, 1 warning (0.05 sec)
+
+MariaDB [examc0715368]> INSERT INTO Planet VALUES(3, 'Mars', 32435021.65468);
+Query OK, 1 row affected, 1 warning (0.08 sec)
+
+MariaDB [examc0715368]> INSERT INTO Planet VALUES(4, 'Omega III', 98432121.5464);
+Query OK, 1 row affected, 1 warning (0.05 sec)
+
+MariaDB [examc0715368]> INSERT INTO Planet VALUES(5, 'Tarantulon VI', 849842198.354654);
+Query OK, 1 row affected, 1 warning (0.05 sec)
+
+MariaDB [examc0715368]> INSERT INTO Planet VALUES(6, 'Cannibalon', 654321987.21654);
+Query OK, 1 row affected, 1 warning (0.05 sec)
+
+MariaDB [examc0715368]> INSERT INTO Planet VALUES(7, 'DogDoo VII', 65498721354.688);
+Query OK, 1 row affected, 1 warning (0.03 sec)
+
+MariaDB [examc0715368]> INSERT INTO Planet VALUES(8, 'Nintenduu 64', 6543219894.1654);
+Query OK, 1 row affected, 1 warning (0.06 sec)
+
+MariaDB [examc0715368]> INSERT INTO Planet VALUES(9, 'Amazonia', 65432135979.6547);
+Query OK, 1 row affected, 1 warning (0.06 sec)
+
+MariaDB [examc0715368]> INSERT INTO Has_Clearance VALUES(1, 1, 2);
+Query OK, 1 row affected (0.02 sec)
+
+MariaDB [examc0715368]> INSERT INTO Has_Clearance VALUES(1, 2, 3);
+Query OK, 1 row affected (0.05 sec)
+
+MariaDB [examc0715368]> INSERT INTO Has_Clearance VALUES(2, 3, 2);
+Query OK, 1 row affected (0.02 sec)
+
+MariaDB [examc0715368]> INSERT INTO Has_Clearance VALUES(2, 4, 4);
+Query OK, 1 row affected (0.03 sec)
+
+MariaDB [examc0715368]> INSERT INTO Has_Clearance VALUES(3, 5, 2);
+Query OK, 1 row affected (0.08 sec)
+
+MariaDB [examc0715368]> INSERT INTO Has_Clearance VALUES(3, 6, 4);
+Query OK, 1 row affected (0.06 sec)
+
+MariaDB [examc0715368]> INSERT INTO Has_Clearance VALUES(4, 7, 1);
+Query OK, 1 row affected (0.08 sec)
+
+MariaDB [examc0715368]> INSERT INTO Shipment VALUES(1, '3004/05/11', 1, 1);
+Query OK, 1 row affected (0.05 sec)
+
+MariaDB [examc0715368]> INSERT INTO Shipment VALUES(2, '3004/05/11', 1, 2);
+Query OK, 1 row affected (0.03 sec)
+
+MariaDB [examc0715368]> INSERT INTO Shipment VALUES(3, NULL, 2, 3);
+Query OK, 1 row affected (0.08 sec)
+
+MariaDB [examc0715368]> INSERT INTO Shipment VALUES(4, NULL, 2, 4);
+Query OK, 1 row affected (0.03 sec)
+
+MariaDB [examc0715368]> INSERT INTO Shipment VALUES(5, NULL, 7, 5);
+Query OK, 1 row affected (0.02 sec)
+
+MariaDB [examc0715368]> INSERT INTO Package VALUES(1, 1, 'Undeclared', 1.5, 1, 2);
+Query OK, 1 row affected (0.03 sec)
+
+MariaDB [examc0715368]> INSERT INTO Package VALUES(2, 1, 'Undeclared', 10.0, 2, 3);
+Query OK, 1 row affected (0.06 sec)
+
+MariaDB [examc0715368]> INSERT INTO Package VALUES(2, 2, 'A bucket of krill', 2.0, 8, 7);
+Query OK, 1 row affected (0.08 sec)
+
+MariaDB [examc0715368]> INSERT INTO Package VALUES(3, 1, 'Undeclared', 15.0, 3, 4);
+Query OK, 1 row affected (0.06 sec)
+
+MariaDB [examc0715368]> INSERT INTO Package VALUES(3, 2, 'Undeclared', 3.0, 5, 1);
+Query OK, 1 row affected (0.03 sec)
+
+MariaDB [examc0715368]> INSERT INTO Package VALUES(3, 3, 'Undeclared', 7.0, 2, 3);
+Query OK, 1 row affected (0.06 sec)
+
+MariaDB [examc0715368]> INSERT INTO Package VALUES(4, 1, 'Undeclared', 5.0, 4, 5);
+Query OK, 1 row affected (0.03 sec)
+
+MariaDB [examc0715368]> INSERT INTO Package VALUES(4, 2, 'Undeclared', 27.0, 1, 2);
+Query OK, 1 row affected (0.02 sec)
+
+MariaDB [examc0715368]> INSERT INTO Package VALUES(5, 1, 'Undeclared', 100.0, 5, 1);
+Query OK, 1 row affected (0.39 sec)
+
+MariaDB [examc0715368]> DESC Employee;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| EmployeeID | int(11)     | NO   | PRI | NULL    |       |
+| Name       | varchar(50) | NO   |     | NULL    |       |
+| Position   | varchar(50) | NO   |     | NULL    |       |
+| Salary     | float(6,2)  | NO   |     | NULL    |       |
+| Remarks    | varchar(50) | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+5 rows in set (0.02 sec)
+
+MariaDB [examc0715368]> DESC Planet;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| PlanetID    | int(11)     | NO   | PRI | NULL    |       |
+| Name        | varchar(50) | NO   |     | NULL    |       |
+| Coordinates | float(6,2)  | NO   |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+MariaDB [examc0715368]> DESC Has_Clearance;
++----------+---------+------+-----+---------+-------+
+| Field    | Type    | Null | Key | Default | Extra |
++----------+---------+------+-----+---------+-------+
+| Employee | int(11) | NO   | PRI | NULL    |       |
+| Planet   | int(11) | NO   | PRI | NULL    |       |
+| Level    | int(11) | NO   |     | NULL    |       |
++----------+---------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+MariaDB [examc0715368]> DESC Shipment;
++--------------+---------+------+-----+---------+-------+
+| Field        | Type    | Null | Key | Default | Extra |
++--------------+---------+------+-----+---------+-------+
+| ShipmentID   | int(11) | NO   | PRI | NULL    |       |
+| ShipmentDate | date    | YES  |     | NULL    |       |
+| Manager      | int(11) | NO   | MUL | NULL    |       |
+| Planet       | int(11) | NO   | MUL | NULL    |       |
++--------------+---------+------+-----+---------+-------+
+4 rows in set (0.02 sec)
+
+MariaDB [examc0715368]> DESC Client;
++---------------+-------------+------+-----+---------+-------+
+| Field         | Type        | Null | Key | Default | Extra |
++---------------+-------------+------+-----+---------+-------+
+| AccountNumber | int(11)     | NO   | PRI | NULL    |       |
+| Name          | varchar(50) | NO   |     | NULL    |       |
++---------------+-------------+------+-----+---------+-------+
+2 rows in set (0.01 sec)
+
+MariaDB [examc0715368]> DESC Package;
++---------------+-------------+------+-----+---------+-------+
+| Field         | Type        | Null | Key | Default | Extra |
++---------------+-------------+------+-----+---------+-------+
+| Shipment      | int(11)     | NO   | PRI | NULL    |       |
+| PackageNumber | int(11)     | NO   | PRI | NULL    |       |
+| Contents      | varchar(50) | NO   |     | NULL    |       |
+| Weight        | float(6,2)  | NO   |     | NULL    |       |
+| Sender        | int(11)     | NO   | MUL | NULL    |       |
+| Recipient     | int(11)     | NO   | MUL | NULL    |       |
++---------------+-------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+MariaDB [examc0715368]> SELECT * FROM  Employee;
++------------+--------------------------+--------------+---------+----------------------------------------------------+
+| EmployeeID | Name                     | Position     | Salary  | Remarks                                            |
++------------+--------------------------+--------------+---------+----------------------------------------------------+
+|          1 | Phillip J. Fry           | Delivery boy | 7500.00 | Not to be confused with the Philip J. Fry from Hov |
+|          2 | Turanga Leela            | Captain      | 9999.99 | NULL                                               |
+|          3 | Bender Bending Rodriguez | Robot        | 7500.00 | NULL                                               |
+|          4 | Hubert J. Farnsworth     | CEO          | 9999.99 | NULL                                               |
+|          5 | John A. Zoidberg         | Physician    |   25.00 | NULL                                               |
+|          6 | Amy Wong                 | Intern       | 5000.00 | NULL                                               |
+|          7 | Hermes Conrad            | Bureaucrat   | 9999.99 | NULL                                               |
+|          8 | Scruffy Scruffington     | Janitor      | 5000.00 | NULL                                               |
++------------+--------------------------+--------------+---------+----------------------------------------------------+
+8 rows in set (0.00 sec)
+
+MariaDB [examc0715368]> SELECT * FROM  Planet;
++----------+------------------+-------------+
+| PlanetID | Name             | Coordinates |
++----------+------------------+-------------+
+|        1 | Omicron Persei 8 |     9999.99 |
+|        2 | Decapod X        |     9999.99 |
+|        3 | Mars             |     9999.99 |
+|        4 | Omega III        |     9999.99 |
+|        5 | Tarantulon VI    |     9999.99 |
+|        6 | Cannibalon       |     9999.99 |
+|        7 | DogDoo VII       |     9999.99 |
+|        8 | Nintenduu 64     |     9999.99 |
+|        9 | Amazonia         |     9999.99 |
++----------+------------------+-------------+
+9 rows in set (0.00 sec)
+
+MariaDB [examc0715368]> SELECT * FROM  Has_Clearance;
++----------+--------+-------+
+| Employee | Planet | Level |
++----------+--------+-------+
+|        1 |      1 |     2 |
+|        1 |      2 |     3 |
+|        2 |      3 |     2 |
+|        2 |      4 |     4 |
+|        3 |      5 |     2 |
+|        3 |      6 |     4 |
+|        4 |      7 |     1 |
++----------+--------+-------+
+7 rows in set (0.00 sec)
+
+MariaDB [examc0715368]> SELECT * FROM  Shipment;
++------------+--------------+---------+--------+
+| ShipmentID | ShipmentDate | Manager | Planet |
++------------+--------------+---------+--------+
+|          1 | 3004-05-11   |       1 |      1 |
+|          2 | 3004-05-11   |       1 |      2 |
+|          3 | NULL         |       2 |      3 |
+|          4 | NULL         |       2 |      4 |
+|          5 | NULL         |       7 |      5 |
++------------+--------------+---------+--------+
+5 rows in set (0.00 sec)
+
+MariaDB [examc0715368]> SELECT * FROM  Client;
++---------------+-------------------+
+| AccountNumber | Name              |
++---------------+-------------------+
+|             1 | Zapp Brannigan    |
+|             2 | Al Gore's Head    |
+|             3 | Barbados Slim     |
+|             4 | Ogden Wernstrom   |
+|             5 | Leo Wong          |
+|             6 | Lrrr              |
+|             7 | John Zoidberg     |
+|             8 | John Zoidfarb     |
+|             9 | Morbo             |
+|            10 | Judge John Whitey |
+|            11 | Calculon          |
++---------------+-------------------+
+11 rows in set (0.00 sec)
+
+MariaDB [examc0715368]> SELECT * FROM  Package;
++----------+---------------+-------------------+--------+--------+-----------+
+| Shipment | PackageNumber | Contents          | Weight | Sender | Recipient |
++----------+---------------+-------------------+--------+--------+-----------+
+|        1 |             1 | Undeclared        |   1.50 |      1 |         2 |
+|        2 |             1 | Undeclared        |  10.00 |      2 |         3 |
+|        2 |             2 | A bucket of krill |   2.00 |      8 |         7 |
+|        3 |             1 | Undeclared        |  15.00 |      3 |         4 |
+|        3 |             2 | Undeclared        |   3.00 |      5 |         1 |
+|        3 |             3 | Undeclared        |   7.00 |      2 |         3 |
+|        4 |             1 | Undeclared        |   5.00 |      4 |         5 |
+|        4 |             2 | Undeclared        |  27.00 |      1 |         2 |
+|        5 |             1 | Undeclared        | 100.00 |      5 |         1 |
++----------+---------------+-------------------+--------+--------+-----------+
+9 rows in set (0.00 sec)
+
+MariaDB [examc0715368]>
+MariaDB [examc0715368]> use myTestDB;
+Database changed
+MariaDB [myTestDB]> SELECT * FROM products;
++------+-----------------+-------+--------------+
+| Code | Name            | Price | Manufacturer |
++------+-----------------+-------+--------------+
+|    1 | Hard drive      |   240 |            5 |
+|    2 | Memory          |   120 |            6 |
+|    3 | ZIP drive       |   150 |            4 |
+|    4 | Floppy disk     |     5 |            6 |
+|    5 | Monitor         |   240 |            1 |
+|    6 | DVD drive       |   180 |            2 |
+|    7 | CD drive        |    90 |            2 |
+|    8 | Printer         |   270 |            3 |
+|    9 | Toner cartridge |    66 |            3 |
+|   10 | DVD burner      |   180 |            2 |
+|   11 | USB Driver      |    40 |         NULL |
+|   12 | USB Driver      |    54 |         NULL |
++------+-----------------+-------+--------------+
+12 rows in set (0.03 sec)
+
+MariaDB [myTestDB]> CREATE VIEW v1 SELECT Code,Name from products;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'SELECT Code,Name from products' at line 1
+MariaDB [myTestDB]> CREATE VIEW v1 as SELECT Code,Name from products;
+Query OK, 0 rows affected (0.08 sec)
+
+MariaDB [myTestDB]> SELECT * from v1;
++------+-----------------+
+| Code | Name            |
++------+-----------------+
+|    1 | Hard drive      |
+|    2 | Memory          |
+|    3 | ZIP drive       |
+|    4 | Floppy disk     |
+|    5 | Monitor         |
+|    6 | DVD drive       |
+|    7 | CD drive        |
+|    8 | Printer         |
+|    9 | Toner cartridge |
+|   10 | DVD burner      |
+|   11 | USB Driver      |
+|   12 | USB Driver      |
++------+-----------------+
+12 rows in set (0.03 sec)
+
+MariaDB [myTestDB]> show tables;
++--------------------+
+| Tables_in_mytestdb |
++--------------------+
+| locations          |
+| manufacturers      |
+| pet                |
+| pieces             |
+| products           |
+| providers          |
+| provides           |
+| student            |
+| t1                 |
+| v1                 |
++--------------------+
+10 rows in set (0.00 sec)
+
+MariaDB [myTestDB]> desc v1;
++-------+--------------+------+-----+---------+-------+
+| Field | Type         | Null | Key | Default | Extra |
++-------+--------------+------+-----+---------+-------+
+| Code  | int(11)      | NO   |     | NULL    |       |
+| Name  | varchar(255) | NO   |     | NULL    |       |
++-------+--------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+MariaDB [myTestDB]> CREATE VIEW v2 as SELECT Code,Name FROM products WHERE Name like '%drive%';
+Query OK, 0 rows affected (0.03 sec)
+
+MariaDB [myTestDB]> SELECT * FROM v2;
++------+------------+
+| Code | Name       |
++------+------------+
+|    1 | Hard drive |
+|    3 | ZIP drive  |
+|    6 | DVD drive  |
+|    7 | CD drive   |
+|   11 | USB Driver |
+|   12 | USB Driver |
++------+------------+
+6 rows in set (0.00 sec)
+
+MariaDB [myTestDB]> INSERT INTO v1 VALUES(13,'iPhone X');
+Query OK, 1 row affected, 1 warning (0.08 sec)
+
+MariaDB [myTestDB]> SELECT * FROM products;
++------+-----------------+-------+--------------+
+| Code | Name            | Price | Manufacturer |
++------+-----------------+-------+--------------+
+|    1 | Hard drive      |   240 |            5 |
+|    2 | Memory          |   120 |            6 |
+|    3 | ZIP drive       |   150 |            4 |
+|    4 | Floppy disk     |     5 |            6 |
+|    5 | Monitor         |   240 |            1 |
+|    6 | DVD drive       |   180 |            2 |
+|    7 | CD drive        |    90 |            2 |
+|    8 | Printer         |   270 |            3 |
+|    9 | Toner cartridge |    66 |            3 |
+|   10 | DVD burner      |   180 |            2 |
+|   11 | USB Driver      |    40 |         NULL |
+|   12 | USB Driver      |    54 |         NULL |
+|   13 | iPhone X        |     0 |         NULL |
++------+-----------------+-------+--------------+
+13 rows in set (0.00 sec)
+
+MariaDB [myTestDB]> INSERT INTO v2 VALUES(14,'iPhone 8');
+Query OK, 1 row affected, 1 warning (0.08 sec)
+
+MariaDB [myTestDB]> SELECT * FROM products;
++------+-----------------+-------+--------------+
+| Code | Name            | Price | Manufacturer |
++------+-----------------+-------+--------------+
+|    1 | Hard drive      |   240 |            5 |
+|    2 | Memory          |   120 |            6 |
+|    3 | ZIP drive       |   150 |            4 |
+|    4 | Floppy disk     |     5 |            6 |
+|    5 | Monitor         |   240 |            1 |
+|    6 | DVD drive       |   180 |            2 |
+|    7 | CD drive        |    90 |            2 |
+|    8 | Printer         |   270 |            3 |
+|    9 | Toner cartridge |    66 |            3 |
+|   10 | DVD burner      |   180 |            2 |
+|   11 | USB Driver      |    40 |         NULL |
+|   12 | USB Driver      |    54 |         NULL |
+|   13 | iPhone X        |     0 |         NULL |
+|   14 | iPhone 8        |     0 |         NULL |
++------+-----------------+-------+--------------+
+14 rows in set (0.02 sec)
+
+MariaDB [myTestDB]> CREATE View v3 as SELECT name FROM products;
+Query OK, 0 rows affected (0.06 sec)
+
+MariaDB [myTestDB]> select * from v3;
++-----------------+
+| name            |
++-----------------+
+| Hard drive      |
+| Memory          |
+| ZIP drive       |
+| Floppy disk     |
+| Monitor         |
+| DVD drive       |
+| CD drive        |
+| Printer         |
+| Toner cartridge |
+| DVD burner      |
+| USB Driver      |
+| USB Driver      |
+| iPhone X        |
+| iPhone 8        |
++-----------------+
+14 rows in set (0.00 sec)
+
+MariaDB [myTestDB]> show create table products\G;
+*************************** 1. row ***************************
+       Table: products
+Create Table: CREATE TABLE `products` (
+  `Code` int(11) NOT NULL,
+  `Name` varchar(255) NOT NULL,
+  `Price` decimal(10,0) NOT NULL,
+  `Manufacturer` int(11) DEFAULT NULL,
+  PRIMARY KEY (`Code`),
+  KEY `Manufacturer` (`Manufacturer`),
+  CONSTRAINT `products_ibfk_1` FOREIGN KEY (`Manufacturer`) REFERENCES `manufacturers` (`CODE`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+1 row in set (0.00 sec)
+
+ERROR: No query specified
+
+MariaDB [myTestDB]> select * from v2;
++------+------------+
+| Code | Name       |
++------+------------+
+|    1 | Hard drive |
+|    3 | ZIP drive  |
+|    6 | DVD drive  |
+|    7 | CD drive   |
+|   11 | USB Driver |
+|   12 | USB Driver |
++------+------------+
+6 rows in set (0.00 sec)
+
+MariaDB [myTestDB]> UPDATE v2 SET name = 'monitor' WHERE Name = 'Monitor';
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 0  Changed: 0  Warnings: 0
+
+MariaDB [myTestDB]> select * from v2;
++------+------------+
+| Code | Name       |
++------+------------+
+|    1 | Hard drive |
+|    3 | ZIP drive  |
+|    6 | DVD drive  |
+|    7 | CD drive   |
+|   11 | USB Driver |
+|   12 | USB Driver |
++------+------------+
+6 rows in set (0.00 sec)
+
+MariaDB [myTestDB]> select * from products;
++------+-----------------+-------+--------------+
+| Code | Name            | Price | Manufacturer |
++------+-----------------+-------+--------------+
+|    1 | Hard drive      |   240 |            5 |
+|    2 | Memory          |   120 |            6 |
+|    3 | ZIP drive       |   150 |            4 |
+|    4 | Floppy disk     |     5 |            6 |
+|    5 | Monitor         |   240 |            1 |
+|    6 | DVD drive       |   180 |            2 |
+|    7 | CD drive        |    90 |            2 |
+|    8 | Printer         |   270 |            3 |
+|    9 | Toner cartridge |    66 |            3 |
+|   10 | DVD burner      |   180 |            2 |
+|   11 | USB Driver      |    40 |         NULL |
+|   12 | USB Driver      |    54 |         NULL |
+|   13 | iPhone X        |     0 |         NULL |
+|   14 | iPhone 8        |     0 |         NULL |
++------+-----------------+-------+--------------+
+14 rows in set (0.00 sec)
+
+MariaDB [myTestDB]> INSERT INTO v2 VALUES(15,'iPhone 9');
+Query OK, 1 row affected, 1 warning (0.05 sec)
+
+MariaDB [myTestDB]> select * from products;
++------+-----------------+-------+--------------+
+| Code | Name            | Price | Manufacturer |
++------+-----------------+-------+--------------+
+|    1 | Hard drive      |   240 |            5 |
+|    2 | Memory          |   120 |            6 |
+|    3 | ZIP drive       |   150 |            4 |
+|    4 | Floppy disk     |     5 |            6 |
+|    5 | Monitor         |   240 |            1 |
+|    6 | DVD drive       |   180 |            2 |
+|    7 | CD drive        |    90 |            2 |
+|    8 | Printer         |   270 |            3 |
+|    9 | Toner cartridge |    66 |            3 |
+|   10 | DVD burner      |   180 |            2 |
+|   11 | USB Driver      |    40 |         NULL |
+|   12 | USB Driver      |    54 |         NULL |
+|   13 | iPhone X        |     0 |         NULL |
+|   14 | iPhone 8        |     0 |         NULL |
+|   15 | iPhone 9        |     0 |         NULL |
++------+-----------------+-------+--------------+
+15 rows in set (0.00 sec)
+
+MariaDB [myTestDB]> select * from v2;
++------+------------+
+| Code | Name       |
++------+------------+
+|    1 | Hard drive |
+|    3 | ZIP drive  |
+|    6 | DVD drive  |
+|    7 | CD drive   |
+|   11 | USB Driver |
+|   12 | USB Driver |
++------+------------+
+6 rows in set (0.00 sec)
+
+MariaDB [myTestDB]> DELETE FROM v2 WHERE Code = 12;
+Query OK, 1 row affected (0.06 sec)
+
+MariaDB [myTestDB]> select * from v2;
++------+------------+
+| Code | Name       |
++------+------------+
+|    1 | Hard drive |
+|    3 | ZIP drive  |
+|    6 | DVD drive  |
+|    7 | CD drive   |
+|   11 | USB Driver |
++------+------------+
+5 rows in set (0.00 sec)
+
+MariaDB [myTestDB]> DELETE FROM v2 WHERE Code = 15;
+Query OK, 0 rows affected (0.00 sec)
+
+MariaDB [myTestDB]> select * from products;
++------+-----------------+-------+--------------+
+| Code | Name            | Price | Manufacturer |
++------+-----------------+-------+--------------+
+|    1 | Hard drive      |   240 |            5 |
+|    2 | Memory          |   120 |            6 |
+|    3 | ZIP drive       |   150 |            4 |
+|    4 | Floppy disk     |     5 |            6 |
+|    5 | Monitor         |   240 |            1 |
+|    6 | DVD drive       |   180 |            2 |
+|    7 | CD drive        |    90 |            2 |
+|    8 | Printer         |   270 |            3 |
+|    9 | Toner cartridge |    66 |            3 |
+|   10 | DVD burner      |   180 |            2 |
+|   11 | USB Driver      |    40 |         NULL |
+|   13 | iPhone X        |     0 |         NULL |
+|   14 | iPhone 8        |     0 |         NULL |
+|   15 | iPhone 9        |     0 |         NULL |
++------+-----------------+-------+--------------+
+14 rows in set (0.00 sec)
+
+MariaDB [myTestDB]> select * from pet;
++----------------+--------+---------+------+------------+------------+
+| name           | owner  | species | sex  | birth      | death      |
++----------------+--------+---------+------+------------+------------+
+| Fluffy         | Harold | cat     | f    | 1993-02-04 | 0000-00-00 |
+| Claws          | Gwen   | cat     | m    | 1994-03-17 | 0000-00-00 |
+| Buffy          | Harold | dog     | f    | 1989-05-13 | 0000-00-00 |
+| Fang           | Benny  | dog     | m    | 1990-08-27 | 0000-00-00 |
+| Bowser         | Diane  | dog     | m    | 1979-08-31 | 1995-07-29 |
+| Chirpy         | Gwen   | bird    | f    | 1998-09-11 | 0000-00-00 |
+| Whistler       | Gwen   | bird    |      | 1997-12-09 | 0000-00-00 |
+| Slim           | Benny  | snake   | m    | 1996-04-29 | 0000-00-00 |
+| Puffball       | Diane  | hamster | f    | 1999-03-30 | NULL       |
+| fo abddfodzxfo | herold | cat     | f    | 0000-00-00 | 0000-00-00 |
+| fofo           | herold | cat     | f    | 0000-00-00 | 0000-00-00 |
++----------------+--------+---------+------+------------+------------+
+11 rows in set (0.08 sec)
+
+MariaDB [myTestDB]> CREATE view v4 as select name,owner FROM pet;
+Query OK, 0 rows affected (0.08 sec)
+
+MariaDB [myTestDB]> select * from v4;
++----------------+--------+
+| name           | owner  |
++----------------+--------+
+| Fluffy         | Harold |
+| Claws          | Gwen   |
+| Buffy          | Harold |
+| Fang           | Benny  |
+| Bowser         | Diane  |
+| Chirpy         | Gwen   |
+| Whistler       | Gwen   |
+| Slim           | Benny  |
+| Puffball       | Diane  |
+| fo abddfodzxfo | herold |
+| fofo           | herold |
++----------------+--------+
+11 rows in set (0.00 sec)
+
+MariaDB [myTestDB]> ALTER table v4 drop column sex;
+ERROR 1347 (HY000): 'mytestdb.v4' is not BASE TABLE
+MariaDB [myTestDB]> CREATE TABLE AUDIT(
+    -> OperationID Integer(10) Primary KEY AUTO_INCREMENT,
+    -> TableName Varchar(50) NOT NULL,
+    -> OperationName Varchar(50) NOT NULL,
+    -> Operationdate Date DEFAULT CURRENT_DATE()
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'CURRENT_DATE()
+)' at line 5
+MariaDB [myTestDB]>
+MariaDB [myTestDB]> CREATE TABLE AUDIT(
+    -> OperationID Integer(10) Primary KEY AUTO_INCREMENT,
+    -> TableName Varchar(50) NOT NULL,
+    -> OperationName Varchar(50) NOT NULL,
+    -> Operationdate Date DEFAULT CURRENTDATE()
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'CURRENTDATE()
+)' at line 5
+MariaDB [myTestDB]> CREATE TABLE AUDIT(
+    -> OperationID Integer(10) Primary KEY AUTO_INCREMENT,
+    -> TableName Varchar(50) NOT NULL,
+    -> OperationName Varchar(50) NOT NULL,
+    -> Operationdate Date DEFAULT CURRENT_DATE()
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'CURRENT_DATE()
+)' at line 5
+MariaDB [myTestDB]> CREATE TABLE AUDIT(
+    -> OperationID Integer(10) Primary KEY AUTO_INCREMENT,
+    -> TableName Varchar(50) NOT NULL,
+    -> OperationName Varchar(50) NOT NULL,
+    -> Operationdate Date DEFAULT CURRENT_DATE
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'CURRENT_DATE
+)' at line 5
+MariaDB [myTestDB]>
+MariaDB [myTestDB]> CREATE TABLE AUDIT(
+    -> OperationID Integer(10) Primary KEY AUTO_INCREMENT,
+    -> TableName Varchar(50) NOT NULL,
+    -> OperationName Varchar(50) NOT NULL,
+    -> Operationdate Date NOT NULL DEFAULT CURRENT_DATE
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'CURRENT_DATE
+)' at line 5
+MariaDB [myTestDB]> CREATE TABLE AUDIT(
+    -> OperationID Integer(10) Primary KEY AUTO_INCREMENT,
+    -> TableName Varchar(50) NOT NULL,
+    -> OperationName Varchar(50) NOT NULL,
+    -> Operationdate Date NOT NULL DEFAULT CURRENT_TIMESTAMP
+    -> );
+ERROR 1067 (42000): Invalid default value for 'Operationdate'
+MariaDB [myTestDB]>
+MariaDB [myTestDB]>
+MariaDB [myTestDB]> CREATE TABLE AUDIT(
+    -> OperationID Integer(10) Primary KEY AUTO_INCREMENT,
+    -> TableName Varchar(50) NOT NULL,
+    -> OperationName Varchar(50) NOT NULL,
+    -> Operationdate TIMESTAMP  NOT NULL DEFAULT CURRENT_TIMESTAMP
+    -> );
+Query OK, 0 rows affected (0.27 sec)
+
+MariaDB [myTestDB]>
+MariaDB [myTestDB]> INSERT INTO AUDIT(TABLENAME,OperationName) VALUES('Products','Insert');
+Query OK, 1 row affected (0.03 sec)
+
+MariaDB [myTestDB]> select * from audit;
++-------------+-----------+---------------+---------------------+
+| OperationID | TableName | OperationName | Operationdate       |
++-------------+-----------+---------------+---------------------+
+|           1 | Products  | Insert        | 2017-09-15 19:05:07 |
++-------------+-----------+---------------+---------------------+
+1 row in set (0.00 sec)
+
+MariaDB [myTestDB]> delimeter //
+    -> CREATE TIGGER Insert_Check_Products AFTER INSERT ON Products
+    -> FOR EACH ROW
+    -> BEGIN
+    -> INSERT INTO AUDIT(TABLENAME,OperationName) VALUES('Products','Delete');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimeter //
+CREATE TIGGER Insert_Check_Products AFTER INSERT ON Products
+FOR E' at line 1
+MariaDB [myTestDB]> END; //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'END' at line 1
+    -> delimeter;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '//
+delimeter' at line 1
+MariaDB [myTestDB]> select * from audit;
++-------------+-----------+---------------+---------------------+
+| OperationID | TableName | OperationName | Operationdate       |
++-------------+-----------+---------------+---------------------+
+|           1 | Products  | Insert        | 2017-09-15 19:05:07 |
++-------------+-----------+---------------+---------------------+
+1 row in set (0.00 sec)
+
+MariaDB [myTestDB]> delimeter //
+    -> CREATE TIGGER Insert_Check_Products AFTER INSERT ON Products
+    -> FOR EACH ROW
+    -> BEGIN
+    -> INSERT INTO AUDIT(TABLENAME,OperationName) VALUES('Products','Delete');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimeter //
+CREATE TIGGER Insert_Check_Products AFTER INSERT ON Products
+FOR E' at line 1
+MariaDB [myTestDB]> END;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'END' at line 1
+MariaDB [myTestDB]>
+MariaDB [myTestDB]> delimeter //
+    -> CREATE TRIGGER Insert_Check_Products AFTER INSERT ON Products
+    -> FOR EACH ROW
+    -> BEGIN
+    -> INSERT INTO AUDIT(TABLENAME,OperationName) VALUES('Products','Delete');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimeter //
+CREATE TRIGGER Insert_Check_Products AFTER INSERT ON Products
+FOR ' at line 1
+MariaDB [myTestDB]> END;delimiter //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'END' at line 1
+    -> ;
+MariaDB [myTestDB]> delimiter //
+MariaDB [myTestDB]> CREATE TRIGGER Insert_Check_Products AFTER INSERT ON Products
+    -> FOR EACH ROW
+    -> BEGIN
+    -> INSERT INTO AUDIT(TABLENAME,OperationName) VALUES('Products','Delete');
+    -> END; //
+Query OK, 0 rows affected (0.13 sec)
+
+MariaDB [myTestDB]> delimiter;
+    -> //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimiter' at line 1
+MariaDB [myTestDB]> INSERT INTO Products VALUES(16,'Apple TV',360,1);
+    -> //
+Query OK, 1 row affected (0.14 sec)
+
+MariaDB [myTestDB]> Select * from audit;
+    -> //
++-------------+-----------+---------------+---------------------+
+| OperationID | TableName | OperationName | Operationdate       |
++-------------+-----------+---------------+---------------------+
+|           1 | Products  | Insert        | 2017-09-15 19:05:07 |
+|           2 | Products  | Delete        | 2017-09-15 19:14:43 |
++-------------+-----------+---------------+---------------------+
+2 rows in set (0.00 sec)
+
+MariaDB [myTestDB]> select * from products;
+    -> //
++------+-----------------+-------+--------------+
+| Code | Name            | Price | Manufacturer |
++------+-----------------+-------+--------------+
+|    1 | Hard drive      |   240 |            5 |
+|    2 | Memory          |   120 |            6 |
+|    3 | ZIP drive       |   150 |            4 |
+|    4 | Floppy disk     |     5 |            6 |
+|    5 | Monitor         |   240 |            1 |
+|    6 | DVD drive       |   180 |            2 |
+|    7 | CD drive        |    90 |            2 |
+|    8 | Printer         |   270 |            3 |
+|    9 | Toner cartridge |    66 |            3 |
+|   10 | DVD burner      |   180 |            2 |
+|   11 | USB Driver      |    40 |         NULL |
+|   13 | iPhone X        |     0 |         NULL |
+|   14 | iPhone 8        |     0 |         NULL |
+|   15 | iPhone 9        |     0 |         NULL |
+|   16 | Apple TV        |   360 |            1 |
++------+-----------------+-------+--------------+
+15 rows in set (0.00 sec)
+
+MariaDB [myTestDB]> delimiter //
+MariaDB [myTestDB]> CREATE TRIGGER Update_Check_Products AFTER UPDATE ON Products
+    -> FOR EACH ROW
+    -> BEGIN
+    -> INSERT INTO AUDIT(TABLENAME,OperationName) VALUES('Products','Update');
+    -> END; //
+Query OK, 0 rows affected (0.12 sec)
+
+MariaDB [myTestDB]> delimiter;
+    -> //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimiter' at line 1
+MariaDB [myTestDB]> Update Products set Name = 'New Monitor' where name = 'Monitor';
+    ->
+    -> Select * FROM audit;
+    -> //
+Query OK, 1 row affected (0.09 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
++-------------+-----------+---------------+---------------------+
+| OperationID | TableName | OperationName | Operationdate       |
++-------------+-----------+---------------+---------------------+
+|           1 | Products  | Insert        | 2017-09-15 19:05:07 |
+|           2 | Products  | Delete        | 2017-09-15 19:14:43 |
+|           3 | Products  | Update        | 2017-09-15 19:24:18 |
++-------------+-----------+---------------+---------------------+
+3 rows in set (0.09 sec)
+
+MariaDB [myTestDB]> delimiter //
+MariaDB [myTestDB]> CREATE TRIGGER Delete_Check_Products AFTER DELETE ON Products
+    -> FOR EACH ROW
+    -> BEGIN
+    -> INSERT INTO AUDIT(TABLENAME,OperationName) VALUES('Products','Deletes');
+    -> END; //
+Query OK, 0 rows affected (0.09 sec)
+
+MariaDB [myTestDB]> delimiter;
+    -> //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimiter' at line 1
+MariaDB [myTestDB]> DELETE FROM products Where code = 16;
+    -> //
+Query OK, 1 row affected (0.09 sec)
+
+MariaDB [myTestDB]> Select * FROM audit;
+    -> //
++-------------+-----------+---------------+---------------------+
+| OperationID | TableName | OperationName | Operationdate       |
++-------------+-----------+---------------+---------------------+
+|           1 | Products  | Insert        | 2017-09-15 19:05:07 |
+|           2 | Products  | Delete        | 2017-09-15 19:14:43 |
+|           3 | Products  | Update        | 2017-09-15 19:24:18 |
+|           4 | Products  | Deletes       | 2017-09-15 19:24:44 |
++-------------+-----------+---------------+---------------------+
+4 rows in set (0.00 sec)
+
+MariaDB [myTestDB]>
