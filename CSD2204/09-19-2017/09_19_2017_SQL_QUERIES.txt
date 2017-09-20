@@ -1,0 +1,1832 @@
+
+Setting environment for using XAMPP for Windows.
+715368@203-IMAC13 c:\xampp
+# mysql -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 2
+Server version: 10.1.21-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2016, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> use mytestdb;
+Database changed
+MariaDB [mytestdb]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| dbc0715368         |
+| examc0715368       |
+| information_schema |
+| mysql              |
+| mytestdb           |
+| performance_schema |
+| phpmyadmin         |
+| test               |
++--------------------+
+8 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE PROCEDURE SP_FIRST()
+    -> BEGIN
+    -> SELECT * FROM Products;
+    -> END;//
+Query OK, 0 rows affected (0.05 sec)
+
+MariaDB [mytestdb]> call SP_FIRST //
++------+-----------------+-------+--------------+
+| Code | Name            | Price | Manufacturer |
++------+-----------------+-------+--------------+
+|    1 | Hard drive      |   240 |            5 |
+|    2 | Memory          |   120 |            6 |
+|    3 | ZIP drive       |   150 |            4 |
+|    4 | Floppy disk     |     5 |            6 |
+|    5 | New Monitor     |   240 |            1 |
+|    6 | DVD drive       |   180 |            2 |
+|    7 | CD drive        |    90 |            2 |
+|    8 | Printer         |   270 |            3 |
+|    9 | Toner cartridge |    66 |            3 |
+|   10 | DVD burner      |   180 |            2 |
+|   11 | USB Driver      |    40 |         NULL |
+|   13 | iPhone X        |     0 |         NULL |
+|   14 | iPhone 8        |     0 |         NULL |
+|   15 | iPhone 9        |     0 |         NULL |
++------+-----------------+-------+--------------+
+14 rows in set (0.08 sec)
+
+Query OK, 0 rows affected (0.23 sec)
+
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE PROCEDURE SP_FIRST(manufacturerID Integer(10))
+    -> BEGIN
+    -> SELECT * FROM Products WHERE Manufacturer = manufacturerID ;
+    -> END;//
+ERROR 1304 (42000): PROCEDURE SP_FIRST already exists
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE PROCEDURE SP_SECOND(manufacturerID Integer(10))
+    -> BEGIN
+    -> SELECT * FROM Products WHERE Manufacturer = manufacturerID ;
+    -> END;//
+Query OK, 0 rows affected (0.05 sec)
+
+MariaDB [mytestdb]> CALL SP_SECOND(1);
+    -> //
++------+-------------+-------+--------------+
+| Code | Name        | Price | Manufacturer |
++------+-------------+-------+--------------+
+|    5 | New Monitor |   240 |            1 |
++------+-------------+-------+--------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE PROCEDURE SP_THIRD(manufacturerID Integer(10))
+    -> BEGIN
+    -> SELECT * FROM Products WHERE Manufacturer = manufacturerID ;
+    -> SELECT COUNT(*) FROM Products;
+    ->
+    -> END;//
+Query OK, 0 rows affected (0.08 sec)
+
+MariaDB [mytestdb]> delimiter;
+    -> //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimiter' at line 1
+MariaDB [mytestdb]> CALL SP_THIRD(1);
+    -> //
++------+-------------+-------+--------------+
+| Code | Name        | Price | Manufacturer |
++------+-------------+-------+--------------+
+|    5 | New Monitor |   240 |            1 |
++------+-------------+-------+--------------+
+1 row in set (0.00 sec)
+
++----------+
+| COUNT(*) |
++----------+
+|       14 |
++----------+
+1 row in set (0.02 sec)
+
+Query OK, 0 rows affected (0.02 sec)
+
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE PROCEDURE SP_FOUR(manufacturerID Integer(10))
+    -> BEGIN
+    -> SELECT Name FROM Manufacturer WHERE code = manufacturerID;
+    -> SELECT * FROM Products WHERE Manufacturer = manufacturerID ;
+    -> END;//
+Query OK, 0 rows affected (0.06 sec)
+
+MariaDB [mytestdb]> CALL SP_FOUR; \\
+ERROR: Unknown command '\\'.
+    -> CALL SP_FOUR;
+    -> //
+ERROR 1318 (42000): Incorrect number of arguments for PROCEDURE mytestdb.SP_FOUR; expected 1, got 0
+MariaDB [mytestdb]> CALL SP_FOUR(2); //
+ERROR 1146 (42S02): Table 'mytestdb.manufacturer' doesn't exist
+MariaDB [mytestdb]> CALL SP_FOUR(2); //delimiter //
+ERROR 1146 (42S02): Table 'mytestdb.manufacturer' doesn't exist
+ERROR: DELIMITER must be followed by a 'delimiter' character or string
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_FOUR(manufacturerID Integer(10))
+    -> BEGIN
+    -> SELECT Name FROM Manufacturers WHERE code = manufacturerID;
+    -> SELECT * FROM Products WHERE Manufacturer = manufacturerID ;
+    -> END;//
+Query OK, 0 rows affected (0.04 sec)
+
+MariaDB [mytestdb]> delimiter;
+    -> //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimiter' at line 1
+MariaDB [mytestdb]> CALL SP_FOUR(2); //
++---------------+
+| Name          |
++---------------+
+| Creative Labs |
++---------------+
+1 row in set (0.08 sec)
+
++------+------------+-------+--------------+
+| Code | Name       | Price | Manufacturer |
++------+------------+-------+--------------+
+|    6 | DVD drive  |   180 |            2 |
+|    7 | CD drive   |    90 |            2 |
+|   10 | DVD burner |   180 |            2 |
++------+------------+-------+--------------+
+3 rows in set (0.11 sec)
+
+Query OK, 0 rows affected (0.19 sec)
+
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE PROCEDURE SP_FIVE(manufacturerID Integer(10))
+    -> BEGIN
+    -> SELECT @tname := Name FROM Manufacturer WHERE code = manufacturerID;
+    -> SELECT Code,Name,price,@tname AS Manufacturer FROM Products WHERE Manufacturer = manufacturerID ;
+    -> SELECT Code,Name,price,@tname AS Manufacturer FROM Products WHERE Manufacturer = manufacturerID ;
+    ->
+    ->
+    -> ;
+    -> //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '' at line 5
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_FIVE(manufacturerID Integer(10))
+    -> BEGIN
+    -> SELECT @tname := Name FROM Manufacturers WHERE code = manufacturerID;
+    -> SELECT Code,Name,price,@tname AS Manufacturer FROM Products WHERE Manufacturer = manufacturerID ;
+    -> END;//
+Query OK, 0 rows affected (0.05 sec)
+
+MariaDB [mytestdb]> CALL SP_FIVE(2);
+    -> //
++----------------+
+| @tname := Name |
++----------------+
+| Creative Labs  |
++----------------+
+1 row in set (0.00 sec)
+
++------+------------+-------+---------------+
+| Code | Name       | price | Manufacturer  |
++------+------------+-------+---------------+
+|    6 | DVD drive  |   180 | Creative Labs |
+|    7 | CD drive   |    90 | Creative Labs |
+|   10 | DVD burner |   180 | Creative Labs |
++------+------------+-------+---------------+
+3 rows in set (0.00 sec)
+
+Query OK, 0 rows affected (0.03 sec)
+
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_Airthematic_Operation(caseValue Integer(10),valueA Integer(10),valueB Integer(10))
+    -> BEGIN
+    -> CASE caseValue
+    -> WHEN 1 THEN SELECT (valueA+valueB) as addition;
+    -> WHEN 2 THEN SELECT 0;
+    -> ELSE
+    -> BEGIN
+    -> END;
+    -> END CASE;
+    -> END;//
+Query OK, 0 rows affected (0.08 sec)
+
+MariaDB [mytestdb]> CALL SP_Airthematic_Operation;
+    -> //
+ERROR 1318 (42000): Incorrect number of arguments for PROCEDURE mytestdb.SP_Airthematic_Operation; expected 3, got 0
+MariaDB [mytestdb]> CALL SP_Airthematic_Operation(1,5,6); //
++----------+
+| addition |
++----------+
+|       11 |
++----------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+MariaDB [mytestdb]>
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_Airthematic_Operation(caseValue Varchar(10),valueA Integer(10),valueB Integer(10))
+    -> BEGIN
+    -> CASE caseValue
+    -> WHEN "Add" THEN SELECT (valueA+valueB) as Addition;
+    -> WHEN "Sub" THEN SELECT (valueA-valueB) as Subtraction;
+    -> WHEN "Mul" THEN SELECT (valueA*valueB) as Multiple;
+    -> WHEN "Div" THEN SELECT (valueA/valueB) as Divide;
+    -> ELSE
+    -> BEGIN
+    -> END;
+    -> END CASE;
+    -> END;//
+Query OK, 0 rows affected (0.09 sec)
+
+MariaDB [mytestdb]> CALL SP_Airthematic_Operation("Add",5,6); //
++----------+
+| Addition |
++----------+
+|       11 |
++----------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+MariaDB [mytestdb]> CALL SP_Airthematic_Operation("Sub",5,6); //
++-------------+
+| Subtraction |
++-------------+
+|          -1 |
++-------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+MariaDB [mytestdb]> CALL SP_Airthematic_Operation("Mul",5,6); //
++----------+
+| Multiple |
++----------+
+|       30 |
++----------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.02 sec)
+
+MariaDB [mytestdb]> CALL SP_Airthematic_Operation("Div",5,6); //
++--------+
+| Divide |
++--------+
+| 0.8333 |
++--------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_FOR_LOOP(value Integer(10))
+    -> BEGIN
+    -> DECLARE x INT;
+    -> SET x = 0;
+    -> loop_label: LOOP
+    -> INSERT INTO number VALUES (x);
+    -> x = x+ 1;
+    -> IF x >= value
+    -> THEN
+    -> LEAVE loop_label;
+    -> END IF;
+    -> END LOOP;
+    -> select * from number ;
+    -> END;//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '= x+ 1;
+IF x >= value
+THEN
+LEAVE loop_label;
+END IF;
+END LOOP;
+select * from nu' at line 7
+MariaDB [mytestdb]> delimiter;
+    -> delimiter //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimiter;delimiter' at line 1
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_FOR_LOOP(value Integer(10))
+    -> BEGIN
+    -> DECLARE x INT;
+    -> SET x = 0;
+    -> loop_label: LOOP
+    -> INSERT INTO number VALUES (x);
+    -> SET x = x+ 1;
+    -> IF x >= value
+    -> THEN
+    -> LEAVE loop_label;
+    -> END IF;
+    -> END LOOP;
+    -> select * from number ;
+    -> END;//
+Query OK, 0 rows affected (0.07 sec)
+
+MariaDB [mytestdb]> delimiter;
+    -> //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimiter' at line 1
+MariaDB [mytestdb]> CALL '
+    '> delimiter //
+    '> CREATE OR REPLACE PROCEDURE SP_FOR_LOOP(value Integer(10))
+    '> BEGIN
+    '> DECLARE x INT;
+    '> SET x = 0;
+    '> loop_label: LOOP
+    '> INSERT INTO number VALUES (x);
+    '> SET x = x+ 1;
+    '> IF x >= value
+    '> THEN
+    '> LEAVE loop_label;
+    '> END IF;
+    '> END LOOP;
+    '> select * from number ;
+    '> END;//
+    '> delimiter;
+    '> //
+    '> ;
+    '> //
+    '> '
+    -> ;
+    -> /
+    ->
+    -> //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''
+delimiter //
+CREATE OR REPLACE PROCEDURE SP_FOR_LOOP(value Integer(10))
+BEGIN
+' at line 1
+MariaDB [mytestdb]> CALL SP_FOR_LOOP(5);
+    -> //
+ERROR 1146 (42S02): Table 'mytestdb.number' doesn't exist
+MariaDB [mytestdb]> CREATE TABLE NUMBER (VALUE INTEGER(10));
+    -> //
+Query OK, 0 rows affected (0.22 sec)
+
+MariaDB [mytestdb]>
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_FOR_LOOP(value Integer(10))
+    -> BEGIN
+    -> DECLARE x INT;
+    -> SET x = 0;
+    -> loop_label: LOOP
+    -> INSERT INTO number VALUES (x);
+    -> SET x = x+ 1;
+    -> IF x >= value
+    -> THEN
+    -> LEAVE loop_label;
+    -> END IF;
+    -> END LOOP;
+    -> select * from number ;
+    -> END;//
+Query OK, 0 rows affected (0.09 sec)
+
+MariaDB [mytestdb]> delimiter;
+    -> //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimiter' at line 1
+MariaDB [mytestdb]> CALL SP_FOR_LOOP(5);
+    -> //
++-------+
+| VALUE |
++-------+
+|     0 |
+|     1 |
+|     2 |
+|     3 |
+|     4 |
++-------+
+5 rows in set (0.24 sec)
+
+Query OK, 0 rows affected (0.30 sec)
+
+MariaDB [mytestdb]> CALL SP_FOR_LOOP(10); //
++-------+
+| VALUE |
++-------+
+|     0 |
+|     1 |
+|     2 |
+|     3 |
+|     4 |
+|     0 |
+|     1 |
+|     2 |
+|     3 |
+|     4 |
+|     5 |
+|     6 |
+|     7 |
+|     8 |
+|     9 |
++-------+
+15 rows in set (0.55 sec)
+
+Query OK, 0 rows affected (0.65 sec)
+
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_FOR_LOOP(IN n Integer(10),OUT sum Integer(10))
+    -> BEGIN
+    -> SET @total = 0
+    -> SET @i =1;
+    -> while (@i <= n)
+    -> Do
+    -> SET @total = @total + @i;
+    -> SET @i = @i + 1;
+    -> END WHILE;
+    -> SELECT @total;
+    -> END;//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'SET @i =1;
+while (@i <= n)
+Do
+SET @total = @total + @i;
+SET @i = @i + 1;
+END WHI' at line 4
+MariaDB [mytestdb]> delimiter;
+    -> //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimiter' at line 1
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_FOR_LOOP(IN n Integer(10),OUT sum Integer(10))
+    -> BEGIN
+    -> SET @total = 0;
+    -> SET @i = 1;
+    -> while (@i <= n)
+    -> Do
+    -> SET @total = @total + @i;
+    -> SET @i = @i + 1;
+    -> END WHILE;
+    -> SELECT  @total;
+    -> SET sum = @total;
+    -> END;//
+Query OK, 0 rows affected (0.07 sec)
+
+MariaDB [mytestdb]> delimiter;
+    -> //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimiter' at line 1
+MariaDB [mytestdb]> CALLdelimiter //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'CALLdelimiter' at line 1
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_FOR_LOOP(value Integer(10))
+    -> BEGIN
+    -> DECLARE x INT;
+    -> SET x = 0;
+    -> loop_label: LOOP
+    -> INSERT INTO number VALUES (x);
+    -> SET x = x + 1;
+    -> IF x >= value
+    -> THEN
+    -> LEAVE loop_label;
+    -> END IF;
+    -> END LOOP;
+    -> select * from number ;
+    -> END;//
+Query OK, 0 rows affected (0.07 sec)
+
+MariaDB [mytestdb]> delimiter;
+    -> //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimiter' at line 1
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_SUM(IN n Integer(10),OUT sum Integer(10))
+    -> BEGIN
+    -> SET @total = 0;
+    -> SET @i = 1;
+    -> while (@i <= n)
+    -> Do
+    -> SET @total = @total + @i;
+    -> SET @i = @i + 1;
+    -> END WHILE;
+    -> SELECT  @total;
+    -> SET sum = @total;
+    -> END;//
+Query OK, 0 rows affected (0.07 sec)
+
+MariaDB [mytestdb]> delimiter; //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimiter' at line 1
+MariaDB [mytestdb]> CALL SP_SUM(10,@x);
+    -> //
++--------+
+| @total |
++--------+
+|     55 |
++--------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+MariaDB [mytestdb]> SELECT @x//
++------+
+| @x   |
++------+
+|   55 |
++------+
+1 row in set (0.00 sec)
+
+MariaDB [mytestdb]> CALL SP_SUM(10,5);
+    -> //
+ERROR 1414 (42000): OUT or INOUT argument 2 for routine mytestdb.SP_SUM is not a variable or NEW pseudo-variable in BEFORE trigger
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR(x Varchar(20)))
+    -> BEGIN
+    -> DECLARE xName Varchar(20) FEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCde INT;
+    -> DECLARE done TINYINT DEFAULT 0;
+    -> DECLARE curl CURSOR FOR SELECT code,name,price FROM Products;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN curl ;
+    -> read_loop: :LOOP
+    -> FETCH FROM curl INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE read_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    -> CLOSE curl;
+    -> END;//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ')
+BEGIN
+DECLARE xName Varchar(20) FEFAULT 'None';
+DECLARE xPrice DECIMAL(10,0);
+' at line 1
+MariaDB [mytestdb]> delimiter;
+    -> delimiter //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimiter;delimiter' at line 1
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR(x Varchar(20)))
+    -> BEGIN
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCde INT;
+    -> DECLARE done TINYINT DEFAULT 0;
+    -> DECLARE curl CURSOR FOR SELECT code,name,price FROM Products;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN curl ;
+    -> read_loop: :LOOP
+    -> FETCH FROM curl INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE read_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    -> CLOSE curl;
+    -> END;//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ')
+BEGIN
+DECLARE xName Varchar(20) DEFAULT 'None';
+DECLARE xPrice DECIMAL(10,0);
+' at line 1
+MariaDB [mytestdb]> delimiter;delimiter //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimiter;delimiter' at line 1
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR(x Varchar(20))
+    -> BEGIN
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCde INT;
+    -> DECLARE done TINYINT DEFAULT 0;
+    -> DECLARE curl CURSOR FOR SELECT code,name,price FROM Products;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN curl ;
+    -> read_loop: :LOOP
+    -> FETCH FROM curl INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE read_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    -> CLOSE curl;
+    -> END;//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ':LOOP
+FETCH FROM curl INTO xcode,xname,xprice;
+IF done THEN LEAVE read_loop;
+END' at line 11
+MariaDB [mytestdb]> delimiter;
+    -> //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimiter' at line 1
+MariaDB [mytestdb]>
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR(x Varchar(20))
+    -> BEGIN
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCde INT;
+    -> DECLARE done TINYINT DEFAULT 0;
+    -> DECLARE curl CURSOR FOR SELECT code,name,price FROM Products;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN curl ;
+    -> read_loop: LOOP
+    -> FETCH FROM curl INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE read_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    -> CLOSE curl;
+    -> END;//
+ERROR 1327 (42000): Undeclared variable: xcode
+MariaDB [mytestdb]> delimiter;
+    -> //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimiter' at line 1
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR(x Varchar(20))
+    -> BEGIN
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCde INT;
+    -> DECLARE done TINYINT DEFAULT 0;
+    -> DECLARE curl CURSOR FOR SELECT code,name,price FROM Products;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN curl ;
+    -> read_loop: LOOP
+    -> FETCH FROM curl INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE read_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    -> CLOSE curl;
+    -> END;//
+ERROR 1327 (42000): Undeclared variable: xcode
+MariaDB [mytestdb]>
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR(x Varchar(20))
+    -> BEGIN
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCode INT;
+    -> DECLARE done TINYINT DEFAULT 0;
+    -> DECLARE curl CURSOR FOR SELECT code,name,price FROM Products;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN curl ;
+    -> read_loop: LOOP
+    -> FETCH FROM curl INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE read_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    -> CLOSE curl;
+    -> END;//
+Query OK, 0 rows affected (0.11 sec)
+
+MariaDB [mytestdb]> delimiter; //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimiter' at line 1
+MariaDB [mytestdb]> CALL SP_CURSOR(x);
+    -> //
+ERROR 1054 (42S22): Unknown column 'x' in 'field list'
+MariaDB [mytestdb]> CALL SP_CURSOR(@x); //
++-------+------------+--------+
+| xcode | xname      | xprice |
++-------+------------+--------+
+|     1 | Hard drive |    240 |
++-------+------------+--------+
+1 row in set (0.02 sec)
+
++-------+--------+--------+
+| xcode | xname  | xprice |
++-------+--------+--------+
+|     2 | Memory |    120 |
++-------+--------+--------+
+1 row in set (0.04 sec)
+
++-------+-----------+--------+
+| xcode | xname     | xprice |
++-------+-----------+--------+
+|     3 | ZIP drive |    150 |
++-------+-----------+--------+
+1 row in set (0.04 sec)
+
++-------+-------------+--------+
+| xcode | xname       | xprice |
++-------+-------------+--------+
+|     4 | Floppy disk |      5 |
++-------+-------------+--------+
+1 row in set (0.06 sec)
+
++-------+-------------+--------+
+| xcode | xname       | xprice |
++-------+-------------+--------+
+|     5 | New Monitor |    240 |
++-------+-------------+--------+
+1 row in set (0.07 sec)
+
++-------+-----------+--------+
+| xcode | xname     | xprice |
++-------+-----------+--------+
+|     6 | DVD drive |    180 |
++-------+-----------+--------+
+1 row in set (0.10 sec)
+
++-------+----------+--------+
+| xcode | xname    | xprice |
++-------+----------+--------+
+|     7 | CD drive |     90 |
++-------+----------+--------+
+1 row in set (0.10 sec)
+
++-------+---------+--------+
+| xcode | xname   | xprice |
++-------+---------+--------+
+|     8 | Printer |    270 |
++-------+---------+--------+
+1 row in set (0.12 sec)
+
++-------+-----------------+--------+
+| xcode | xname           | xprice |
++-------+-----------------+--------+
+|     9 | Toner cartridge |     66 |
++-------+-----------------+--------+
+1 row in set (0.13 sec)
+
++-------+------------+--------+
+| xcode | xname      | xprice |
++-------+------------+--------+
+|    10 | DVD burner |    180 |
++-------+------------+--------+
+1 row in set (0.16 sec)
+
++-------+------------+--------+
+| xcode | xname      | xprice |
++-------+------------+--------+
+|    11 | USB Driver |     40 |
++-------+------------+--------+
+1 row in set (0.17 sec)
+
++-------+----------+--------+
+| xcode | xname    | xprice |
++-------+----------+--------+
+|    13 | iPhone X |      0 |
++-------+----------+--------+
+1 row in set (0.19 sec)
+
++-------+----------+--------+
+| xcode | xname    | xprice |
++-------+----------+--------+
+|    14 | iPhone 8 |      0 |
++-------+----------+--------+
+1 row in set (0.20 sec)
+
++-------+----------+--------+
+| xcode | xname    | xprice |
++-------+----------+--------+
+|    15 | iPhone 9 |      0 |
++-------+----------+--------+
+1 row in set (0.22 sec)
+
+Query OK, 0 rows affected (0.23 sec)
+
+MariaDB [mytestdb]> select * from manufacturers;
+    -> //
++------+-----------------+
+| CODE | NAME            |
++------+-----------------+
+|    1 | Sony            |
+|    2 | Creative Labs   |
+|    3 | Hewlett-Packard |
+|    4 | Iomega          |
+|    5 | Fujitsu         |
+|    6 | Winchester      |
++------+-----------------+
+6 rows in set (0.00 sec)
+
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR(x Varchar(20))
+    -> BEGIN
+    -> DECLARE mCode INT;
+    -> DECLARE mName Varchar(20) DEFAULT 'None';
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCode INT;
+    -> DECLARE manufacturer_done TINYINT DEFAULT 0;
+    -> DECLARE curl CURSOR FOR SELECT * FROM Manufacturers;
+    ->
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET manufacturer_done = 1;
+    -> OPEN curl ;
+    -> manufacturers_loop: LOOP
+    -> FETCH FROM curl INTO mCode,mName;
+    -> IF manufacturer_done THEN LEAVE manufacturers_loop;
+    -> DECLARE products_done TINYINT DEFAULT 0;
+    -> DECLARE cur2 CURSOR FOR SELECT code, name, price FROM PRODUCTS WHERE manufacturer = mcode;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET products_done = 1;
+    -> END IF;
+    -> OPEN cur2;
+    -> products_loop: LOOP
+    -> FETCH FROM curl INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE products_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    -> CLOSE cur2;
+    -> END LOOP;
+    -> CLOSE curl;
+    -> END;//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'DECLARE products_done TINYINT DEFAULT 0;
+DECLARE cur2 CURSOR FOR SELECT code, na' at line 16
+MariaDB [mytestdb]>
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR(x Varchar(20))
+    -> BEGIN
+    -> DECLARE mCode INT;
+    -> DECLARE mName Varchar(20) DEFAULT 'None';
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCode INT;
+    -> DECLARE manufacturer_done TINYINT DEFAULT 0;
+    -> DECLARE curl CURSOR FOR SELECT * FROM Manufacturers;
+    ->
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET manufacturer_done = 1;
+    -> OPEN curl ;
+    -> manufacturers_loop: LOOP
+    -> FETCH FROM curl INTO mCode,mName;
+    -> IF manufacturer_done THEN LEAVE manufacturers_loop;
+    -> DECLARE products_done TINYINT DEFAULT 0;
+    -> DECLARE cur2 CURSOR FOR SELECT code, name, price FROM products WHERE manufacturer = mcode;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET products_done = 1;
+    -> END IF;
+    -> SELECT mCode,mName;
+    -> OPEN cur2;
+    -> products_loop: LOOP
+    -> FETCH FROM cur2 INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE products_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    -> CLOSE cur2;
+    -> END LOOP;
+    -> CLOSE curl;
+    -> END;//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'DECLARE products_done TINYINT DEFAULT 0;
+DECLARE cur2 CURSOR FOR SELECT code, na' at line 16
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR(x Varchar(20))
+    -> BEGIN
+    -> DECLARE mCode INT;
+    -> DECLARE mName Varchar(20) DEFAULT 'None';
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCode INT;
+    -> DECLARE manufacturer_done TINYINT DEFAULT 0;
+    -> DECLARE curl CURSOR FOR SELECT * FROM Manufacturers;
+    -> DECLARE products_done TINYINT DEFAULT 0;
+    -> DECLARE cur2 CURSOR FOR SELECT code, name, price FROM products WHERE manufacturer = mcode;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET products_done = 1;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET manufacturer_done = 1;
+    -> OPEN curl ;
+    -> manufacturers_loop: LOOP
+    -> FETCH FROM curl INTO mCode,mName;
+    -> IF manufacturer_done THEN LEAVE manufacturers_loop;
+    ->
+    -> END IF;
+    -> SELECT mCode,mName;
+    -> OPEN cur2;
+    -> products_loop: LOOP
+    -> FETCH FROM cur2 INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE products_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    -> CLOSE cur2;
+    -> END LOOP;
+    -> CLOSE curl;
+    -> END;//
+ERROR 1337 (42000): Variable or condition declaration after cursor or handler declaration
+MariaDB [mytestdb]> delimiter;
+    -> //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimiter' at line 1
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR1(x Varchar(20))
+    -> BEGIN
+    -> DECLARE mCode INT;
+    -> DECLARE mName Varchar(20) DEFAULT 'None';
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCode INT;
+    -> DECLARE manufacturer_done TINYINT DEFAULT 0;
+    -> DECLARE curl CURSOR FOR SELECT * FROM Manufacturers;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET manufacturer_done = 1;
+    -> DECLARE products_done TINYINT DEFAULT 0;
+    -> DECLARE cur2 CURSOR FOR SELECT code, name, price FROM products WHERE manufacturer = mcode;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET products_done = 1;
+    ->
+    -> OPEN curl ;
+    -> manufacturers_loop: LOOP
+    -> FETCH FROM curl INTO mCode,mName;
+    -> IF manufacturer_done THEN LEAVE manufacturers_loop;
+    ->
+    -> END IF;
+    -> SELECT mCode,mName;
+    -> OPEN cur2;
+    -> products_loop: LOOP
+    -> FETCH FROM cur2 INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE products_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    -> CLOSE cur2;
+    -> END LOOP;
+    -> CLOSE curl;
+    -> END;//
+ERROR 1337 (42000): Variable or condition declaration after cursor or handler declaration
+MariaDB [mytestdb]> delimiter;//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimiter' at line 1
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR1(x Varchar(20))
+    -> BEGIN
+    -> DECLARE mCode INT;
+    -> DECLARE mName Varchar(20) DEFAULT 'None';
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCode INT;
+    -> DECLARE manufacturer_done TINYINT DEFAULT 0;
+    -> DECLARE products_done TINYINT DEFAULT 0;
+    ->
+    -> DECLARE curl CURSOR FOR SELECT * FROM Manufacturers;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET manufacturer_done = 1;
+    ->
+    -> DECLARE cur2 CURSOR FOR SELECT code, name, price FROM products WHERE manufacturer = mcode;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET products_done = 1;
+    ->
+    -> OPEN curl ;
+    -> manufacturers_loop: LOOP
+    -> FETCH FROM curl INTO mCode,mName;
+    -> IF manufacturer_done THEN LEAVE manufacturers_loop;
+    ->
+    -> END IF;
+    -> SELECT mCode,mName;
+    -> OPEN cur2;
+    -> products_loop: LOOP
+    -> FETCH FROM cur2 INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE products_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    -> CLOSE cur2;
+    -> END LOOP;
+    -> CLOSE curl;
+    -> END;//
+ERROR 1338 (42000): Cursor declaration after handler declaration
+MariaDB [mytestdb]> delimiter;
+    -> //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimiter' at line 1
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR1(x Varchar(20))
+    -> BEGIN
+    -> DECLARE mCode INT;
+    -> DECLARE mName Varchar(20) DEFAULT 'None';
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCode INT;
+    -> DECLARE manufacturer_done TINYINT DEFAULT 0;
+    -> DECLARE products_done TINYINT DEFAULT 0;
+    ->
+    -> DECLARE curl CURSOR FOR SELECT * FROM Manufacturers;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET manufacturer_done = 1;
+    ->
+    ->
+    ->
+    -> OPEN curl ;
+    -> manufacturers_loop: LOOP
+    -> FETCH FROM curl INTO mCode,mName;
+    -> IF manufacturer_done THEN LEAVE manufacturers_loop;
+    -> DECLARE cur2 CURSOR FOR SELECT code, name, price FROM products WHERE manufacturer = mcode;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET products_done = 1;
+    -> END IF;
+    -> SELECT mCode,mName;
+    -> OPEN cur2;
+    -> products_loop: LOOP
+    -> FETCH FROM cur2 INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE products_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    -> CLOSE cur2;
+    -> END LOOP;
+    -> CLOSE curl;
+    -> END;//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'DECLARE cur2 CURSOR FOR SELECT code, name, price FROM products WHERE manufacture' at line 20
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR1(x Varchar(20))
+    -> BEGIN
+    -> DECLARE mCode INT;
+    -> DECLARE mName Varchar(20) DEFAULT 'None';
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCode INT;
+    -> DECLARE manufacturer_done TINYINT DEFAULT 0;
+    -> DECLARE products_done TINYINT DEFAULT 0;
+    ->
+    -> DECLARE curl CURSOR FOR SELECT * FROM Manufacturers;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET manufacturer_done = 1;
+    ->
+    -> OPEN curl ;
+    -> manufacturers_loop: LOOP
+    -> FETCH FROM curl INTO mCode,mName;
+    -> IF manufacturer_done THEN LEAVE manufacturers_loop;
+    ->
+    -> END IF;
+    -> SELECT mCode,mName;
+    ->
+    -> DECLARE cur2 CURSOR FOR SELECT code, name, price FROM products WHERE manufacturer = mcode;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET products_done = 1;
+    ->
+    -> OPEN cur2;
+    -> products_loop: LOOP
+    -> FETCH FROM cur2 INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE products_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    -> CLOSE cur2;
+    -> END LOOP;
+    -> CLOSE curl;
+    -> END;//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'DECLARE cur2 CURSOR FOR SELECT code, name, price FROM products WHERE manufacture' at line 22
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR1(x Varchar(20))
+    -> BEGIN
+    -> DECLARE mCode INT;
+    -> DECLARE mName Varchar(20) DEFAULT 'None';
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCode INT;
+    -> DECLARE done TINYINT DEFAULT 0;
+    ->
+    -> DECLARE curl CURSOR FOR SELECT * FROM Manufacturers;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN curl ;
+    -> manufacturers_loop: LOOP
+    -> FETCH FROM curl INTO mCode,mName;
+    -> IF manufacturer_done THEN LEAVE manufacturers_loop;
+    ->
+    -> END IF;
+    -> SELECT mCode,mName;
+    -> CLOSE cur2;
+    -> END LOOP;
+    ->
+    -> DECLARE cur2 CURSOR FOR SELECT code, name, price FROM products WHERE manufacturer = mcode;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN cur2;
+    -> products_loop: LOOP
+    -> FETCH FROM cur2 INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE products_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    ->
+    -> CLOSE curl;
+    -> END;//
+ERROR 1324 (42000): Undefined CURSOR: cur2
+MariaDB [mytestdb]> delimiter;
+    -> //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimiter' at line 1
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR1(x Varchar(20))
+    -> BEGIN
+    -> DECLARE mCode INT;
+    -> DECLARE mName Varchar(20) DEFAULT 'None';
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCode INT;
+    -> DECLARE done TINYINT DEFAULT 0;
+    ->
+    -> DECLARE curl CURSOR FOR SELECT * FROM Manufacturers;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN curl ;
+    -> manufacturers_loop: LOOP
+    -> FETCH FROM curl INTO mCode,mName;
+    -> IF manufacturer_done THEN LEAVE manufacturers_loop;
+    ->
+    -> END IF;
+    -> SELECT mCode,mName;
+    -> END LOOP;
+    -> CLOSE cur2;
+    ->
+    ->
+    -> DECLARE cur2 CURSOR FOR SELECT code, name, price FROM products WHERE manufacturer = mcode;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN cur2;
+    -> products_loop: LOOP
+    -> FETCH FROM cur2 INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE products_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    ->
+    -> CLOSE curl;
+    -> END;//
+ERROR 1324 (42000): Undefined CURSOR: cur2
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR1(x Varchar(20))
+    -> BEGIN
+    -> DECLARE mCode INT;
+    -> DECLARE mName Varchar(20) DEFAULT 'None';
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCode INT;
+    -> DECLARE done TINYINT DEFAULT 0;
+    ->
+    -> DECLARE curl CURSOR FOR SELECT * FROM Manufacturers;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN curl ;
+    -> manufacturers_loop: LOOP
+    -> FETCH FROM curl INTO mCode,mName;
+    -> IF manufacturer_done THEN LEAVE manufacturers_loop;
+    ->
+    -> END IF;
+    -> SELECT mCode,mName;
+    -> END LOOP;
+    -> CLOSE cur1;
+    ->
+    ->
+    -> DECLARE cur2 CURSOR FOR SELECT code, name, price FROM products WHERE manufacturer = mcode;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN cur2;
+    -> products_loop: LOOP
+    -> FETCH FROM cur2 INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE products_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    ->
+    -> CLOSE cur2;
+    -> END;//
+ERROR 1324 (42000): Undefined CURSOR: cur1
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR1(x Varchar(20))
+    -> BEGIN
+    -> DECLARE mCode INT;
+    -> DECLARE mName Varchar(20) DEFAULT 'None';
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCode INT;
+    -> DECLARE done TINYINT DEFAULT 0;
+    ->
+    -> DECLARE curl CURSOR FOR SELECT * FROM Manufacturers;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN curl ;
+    -> manufacturers_loop: LOOP
+    -> FETCH FROM curl INTO mCode,mName;
+    -> IF manufacturer_done THEN LEAVE manufacturers_loop;
+    ->
+    -> END IF;
+    -> SELECT mCode,mName;
+    -> END LOOP;
+    -> CLOSE curl;
+    ->
+    ->
+    -> DECLARE cur2 CURSOR FOR SELECT code, name, price FROM products WHERE manufacturer = mcode;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN cur2;
+    -> products_loop: LOOP
+    -> FETCH FROM cur2 INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE products_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    ->
+    -> CLOSE cur2;
+    -> END;//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'DECLARE cur2 CURSOR FOR SELECT code, name, price FROM products WHERE manufacture' at line 24
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR1(x Varchar(20))
+    -> BEGIN
+    -> DECLARE mCode INT;
+    -> DECLARE mName Varchar(20) DEFAULT 'None';
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCode INT;
+    -> DECLARE done TINYINT DEFAULT 0;
+    ->
+    -> DECLARE cur1 CURSOR FOR SELECT * FROM Manufacturers;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN cur1 ;
+    -> manufacturers_loop: LOOP
+    -> FETCH FROM cur1 INTO mCode,mName;
+    -> IF manufacturer_done THEN LEAVE manufacturers_loop;
+    ->
+    -> END IF;
+    -> SELECT mCode,mName;
+    -> END LOOP;
+    -> CLOSE cur1;
+    ->
+    -> DECLARE cur2 CURSOR FOR SELECT code, name, price FROM products WHERE manufacturer = mcode;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN cur2;
+    -> products_loop: LOOP
+    -> FETCH FROM cur2 INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE products_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    ->
+    -> CLOSE cur2;
+    -> END;//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'DECLARE cur2 CURSOR FOR SELECT code, name, price FROM products WHERE manufacture' at line 23
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR1(x Varchar(20))
+    -> BEGIN
+    -> DECLARE mCode INT;
+    -> DECLARE mName Varchar(20) DEFAULT 'None';
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCode INT;
+    -> DECLARE done TINYINT DEFAULT 0;
+    ->
+    -> DECLARE cur1 CURSOR FOR SELECT * FROM Manufacturers;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN cur1 ;
+    -> manufacturers_loop: LOOP
+    -> FETCH FROM cur1 INTO mCode,mName;
+    -> IF manufacturer_done THEN LEAVE manufacturers_loop;
+    ->
+    -> END IF;
+    -> SELECT mCode,mName;
+    -> END LOOP;
+    -> CLOSE cur1;
+    ->
+    -> DECLARE cur2 CURSOR FOR SELECT code, name, price FROM products WHERE manufacturer = mCode;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN cur2;
+    -> products_loop: LOOP
+    -> FETCH FROM cur2 INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE products_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    ->
+    -> CLOSE cur2;
+    -> END;//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'DECLARE cur2 CURSOR FOR SELECT code, name, price FROM products WHERE manufacture' at line 23
+MariaDB [mytestdb]> delimiter;
+    -> delimiter //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimiter;delimiter' at line 1
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR1(x Varchar(20))
+    -> BEGIN
+    -> DECLARE mCode INT;
+    -> DECLARE mName Varchar(20) DEFAULT 'None';
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCode INT;
+    -> DECLARE done TINYINT DEFAULT 0;
+    ->
+    -> DECLARE cur1 CURSOR FOR SELECT * FROM Manufacturers;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN cur1 ;
+    -> manufacturers_loop: LOOP
+    -> FETCH FROM cur1 INTO mCode,mName;
+    -> IF manufacturer_done THEN LEAVE manufacturers_loop;
+    ->
+    -> END IF;
+    -> SELECT mCode,mName;
+    -> END LOOP;
+    -> CLOSE cur1;
+    ->
+    -> DECLARE cur2 CURSOR FOR SELECT code, name, price FROM products ;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN cur2;
+    -> products_loop: LOOP
+    -> FETCH FROM cur2 INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE products_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    ->
+    -> CLOSE cur2;
+    -> END;//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'DECLARE cur2 CURSOR FOR SELECT code, name, price FROM products ;
+DECLARE CONTINU' at line 23
+MariaDB [mytestdb]> delimiter;
+    -> //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimiter' at line 1
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR1(x Varchar(20))
+    -> BEGIN
+    -> DECLARE mCode INT;
+    -> DECLARE mName Varchar(20) DEFAULT 'None';
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCode INT;
+    -> DECLARE done TINYINT DEFAULT 0;
+    ->
+    -> DECLARE cur1 CURSOR FOR SELECT * FROM Manufacturers;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN cur1 ;
+    -> manufacturers_loop: LOOP
+    -> FETCH FROM cur1 INTO mCode,mName;
+    -> IF manufacturer_done THEN LEAVE manufacturers_loop;
+    -> END IF;
+    -> SELECT mCode,mName;
+    ->
+    ->
+    -> DECLARE cur2 CURSOR FOR SELECT code, name, price FROM products ;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN cur2;
+    -> products_loop: LOOP
+    -> FETCH FROM cur2 INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE products_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    ->
+    -> CLOSE cur2;
+    -> END LOOP;
+    -> CLOSE cur1;
+    -> END;//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'DECLARE cur2 CURSOR FOR SELECT code, name, price FROM products ;
+DECLARE CONTINU' at line 21
+MariaDB [mytestdb]> delimiter;
+    -> //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimiter' at line 1
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR1(x Varchar(20))
+    -> BEGIN
+    -> DECLARE mCode INT;
+    -> DECLARE mName Varchar(20) DEFAULT 'None';
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCode INT;
+    -> DECLARE done TINYINT DEFAULT 0;
+    ->
+    -> DECLARE cur1 CURSOR FOR SELECT * FROM Manufacturers;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN cur1 ;
+    -> manufacturers_loop: LOOP
+    -> FETCH FROM cur1 INTO mCode,mName;
+    -> IF manufacturer_done THEN LEAVE manufacturers_loop;
+    -> END IF;
+    -> SELECT mCode,mName;
+    -> END LOOP;
+    -> CLOSE cur1;
+    ->
+    -> DECLARE cur2 CURSOR FOR SELECT code, name, price FROM products ;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN cur2;
+    -> products_loop: LOOP
+    -> FETCH FROM cur2 INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE products_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    ->
+    -> CLOSE cur2;
+    -> END;//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'DECLARE cur2 CURSOR FOR SELECT code, name, price FROM products ;
+DECLARE CONTINU' at line 22
+MariaDB [mytestdb]> delimiter;
+    -> //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'delimiter' at line 1
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR1(x Varchar(20))
+    -> BEGIN
+    -> DECLARE mCode INT;
+    -> DECLARE mName Varchar(20) DEFAULT 'None';
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCode INT;
+    -> DECLARE done TINYINT DEFAULT 0;
+    ->
+    -> DECLARE cur1 CURSOR FOR SELECT * FROM Manufacturers;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN cur1 ;
+    -> manufacturers_loop: LOOP
+    -> FETCH FROM cur1 INTO mCode,mName;
+    -> IF manufacturer_done THEN LEAVE manufacturers_loop;
+    -> END IF;
+    -> SELECT mCode,mName;
+    -> END LOOP;
+    -> CLOSE cur1;
+    ->
+    -> DECLARE cur2 CURSOR FOR SELECT code, name, price FROM products ;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN cur2;
+    -> products_loop: LOOP
+    -> FETCH FROM cur2 INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE products_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    ->
+    -> CLOSE cur2;
+    -> END;//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'DECLARE cur2 CURSOR FOR SELECT code, name, price FROM products ;
+DECLARE CONTINU' at line 22
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR1(x Varchar(20))
+    -> BEGIN
+    -> DECLARE mCode INT;
+    -> DECLARE mName Varchar(20) DEFAULT 'None';
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCode INT;
+    -> DECLARE done TINYINT DEFAULT 0;
+    ->
+    -> DECLARE cur1 CURSOR FOR SELECT * FROM Manufacturers;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN cur1 ;
+    -> manufacturers_loop: LOOP
+    -> FETCH FROM cur1 INTO mCode,mName;
+    -> IF manufacturer_done THEN LEAVE manufacturers_loop;
+    -> END IF;
+    -> SELECT mCode,mName;
+    -> END LOOP;
+    -> CLOSE cur1;
+    ->
+    -> DECLARE cur2 CURSOR FOR SELECT code,name,price FROM Products;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN cur2;
+    -> products_loop: LOOP
+    -> FETCH FROM cur2 INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE products_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    ->
+    -> CLOSE cur2;
+    -> END;//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'DECLARE cur2 CURSOR FOR SELECT code,name,price FROM Products;
+DECLARE CONTINUE H' at line 22
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR1(x Varchar(20))
+    -> BEGIN
+    -> DECLARE mCode INT;
+    -> DECLARE mName Varchar(20) DEFAULT 'None';
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCode INT;
+    -> DECLARE done TINYINT DEFAULT 0;
+    ->
+    -> DECLARE cur1 CURSOR FOR SELECT * FROM Manufacturers;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN cur1 ;
+    -> manufacturers_loop: LOOP
+    -> FETCH FROM cur1 INTO mCode,mName;
+    -> IF manufacturer_done THEN LEAVE manufacturers_loop;
+    -> END IF;
+    -> SELECT mCode,mName;
+    ->
+    ->
+    -> DECLARE cur2 CURSOR FOR SELECT code,name,price FROM Products;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN cur2;
+    -> products_loop: LOOP
+    -> FETCH FROM cur2 INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE products_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    -> CLOSE cur2;
+    -> END LOOP;
+    -> CLOSE cur1;
+    -> END;//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'DECLARE cur2 CURSOR FOR SELECT code,name,price FROM Products;
+DECLARE CONTINUE H' at line 21
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR1(x Varchar(20))
+    -> BEGIN
+    -> DECLARE mCode INT;
+    -> DECLARE mName Varchar(20) DEFAULT 'None';
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCode INT;
+    -> DECLARE done TINYINT DEFAULT 0;
+    ->
+    -> DECLARE cur1 CURSOR FOR SELECT * FROM Manufacturers;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN cur1 ;
+    -> manufacturers_loop: LOOP
+    -> FETCH FROM cur1 INTO mCode,mName;
+    -> IF manufacturer_done THEN LEAVE manufacturers_loop;
+    -> END IF;
+    -> SELECT mCode,mName;
+    -> END LOOP;
+    -> CLOSE cur1;
+    ->
+    ->
+    -> END;//
+Query OK, 0 rows affected (0.09 sec)
+
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR1(x Varchar(20))
+    -> BEGIN
+    -> DECLARE mCode INT;
+    -> DECLARE mName Varchar(20) DEFAULT 'None';
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCode INT;
+    -> DECLARE done TINYINT DEFAULT 0;
+    ->
+    -> DECLARE cur1 CURSOR FOR SELECT * FROM Manufacturers;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN cur1 ;
+    -> manufacturers_loop: LOOP
+    -> FETCH FROM cur1 INTO mCode,mName;
+    -> IF manufacturer_done THEN LEAVE manufacturers_loop;
+    -> END IF;
+    -> SELECT mCode,mName;
+    -> END LOOP;
+    -> CLOSE cur1;
+    ->
+    -> DECLARE cur2 CURSOR FOR SELECT code,name,price FROM Products;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN cur2;
+    -> products_loop: LOOP
+    -> FETCH FROM cur2 INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE products_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    -> CLOSE cur2;
+    -> END;//
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'DECLARE cur2 CURSOR FOR SELECT code,name,price FROM Products;
+DECLARE CONTINUE H' at line 22
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR1(x Varchar(20))
+    -> BEGIN
+    -> DECLARE mCode INT;
+    -> DECLARE mName Varchar(20) DEFAULT 'None';
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCode INT;
+    -> DECLARE done TINYINT DEFAULT 0;
+    ->
+    -> DECLARE cur1 CURSOR FOR SELECT * FROM Manufacturers;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    -> DECLARE cur2 CURSOR FOR SELECT code,name,price FROM Products;
+    -> OPEN cur1 ;
+    -> manufacturers_loop: LOOP
+    -> FETCH FROM cur1 INTO mCode,mName;
+    -> IF manufacturer_done THEN LEAVE manufacturers_loop;
+    -> END IF;
+    -> SELECT mCode,mName;
+    -> END LOOP;
+    -> CLOSE cur1;
+    ->
+    ->
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    ->
+    -> OPEN cur2;
+    -> products_loop: LOOP
+    -> FETCH FROM cur2 INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE products_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    -> CLOSE cur2;
+    -> END;//
+ERROR 1338 (42000): Cursor declaration after handler declaration
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR1(x Varchar(20))
+    -> BEGIN
+    -> DECLARE mCode INT;
+    -> DECLARE mName Varchar(20) DEFAULT 'None';
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCode INT;
+    -> DECLARE done TINYINT DEFAULT 0;
+    ->
+    -> DECLARE cur1 CURSOR FOR SELECT * FROM Manufacturers;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    -> DECLARE cur2 CURSOR FOR SELECT code,name,price FROM Products;
+    -> OPEN cur1 ;
+    -> manufacturers_loop: LOOP
+    -> FETCH FROM cur1 INTO mCode,mName;
+    -> IF manufacturer_done THEN LEAVE manufacturers_loop;
+    -> END IF;
+    -> SELECT mCode,mName;
+    -> END LOOP;
+    -> CLOSE cur1;
+    ->
+    -> OPEN cur2;
+    -> products_loop: LOOP
+    -> FETCH FROM cur2 INTO xcode,xname,xprice;
+    -> IF done THEN LEAVE products_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP;
+    -> CLOSE cur2;
+    -> END;//
+ERROR 1338 (42000): Cursor declaration after handler declaration
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR1(x Varchar(20))
+    -> BEGIN
+    -> DECLARE mCode INT;
+    -> DECLARE mName Varchar(20) DEFAULT 'None';
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCode INT;
+    -> DECLARE manu_done TINYINT DEFAULT 0;
+    ->
+    -> DECLARE cur1 CURSOR FOR SELECT * FROM Manufacturers;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET manu_done = 1;
+    ->
+    -> OPEN cur1 ;
+    -> manufacturers_loop: LOOP
+    -> FETCH FROM cur1 INTO mCode,mName;
+    -> IF manufacturer_done
+    -> THEN
+    -> CLOSE cur1;
+    -> LEAVE manufacturers_loop;
+    -> END IF;
+    -> SELECT mCode,mName;
+    -> Block2: BEGIN
+    -> DECLARE pro_done TINYINT DEFAULT 0;
+    -> DECLARE cur2 CURSOR FOR SELECT code,name,price FROM Products WHERE manufacturer = mCode;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET pro_done = 1;
+    -> OPEN cur2;
+    -> products_loop: LOOP
+    -> FETCH FROM cur2 INTO xcode,xname,xprice;
+    -> IF pro_done
+    -> THEN
+    -> CLOSE cur2;
+    -> LEAVE products_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP products_loop;
+    -> END Block2;
+    -> END LOOP manufacturers_loop;
+    ->
+    -> END;//
+Query OK, 0 rows affected (0.05 sec)
+
+MariaDB [mytestdb]> CALL SP_CURSOR1(@x);
+    -> //
+ERROR 1054 (42S22): Unknown column 'manufacturer_done' in 'field list'
+MariaDB [mytestdb]> delimiter //
+MariaDB [mytestdb]> CREATE OR REPLACE PROCEDURE SP_CURSOR1(x Varchar(20))
+    -> BEGIN
+    -> DECLARE mCode INT;
+    -> DECLARE mName Varchar(20) DEFAULT 'None';
+    -> DECLARE xName Varchar(20) DEFAULT 'None';
+    -> DECLARE xPrice DECIMAL(10,0);
+    -> DECLARE xCode INT;
+    -> DECLARE manu_done TINYINT DEFAULT 0;
+    ->
+    -> DECLARE cur1 CURSOR FOR SELECT * FROM Manufacturers;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET manu_done = 1;
+    ->
+    -> OPEN cur1 ;
+    -> manufacturers_loop: LOOP
+    -> FETCH FROM cur1 INTO mCode,mName;
+    -> IF manu_done
+    -> THEN
+    -> CLOSE cur1;
+    -> LEAVE manufacturers_loop;
+    -> END IF;
+    -> SELECT mCode,mName;
+    -> Block2: BEGIN
+    -> DECLARE pro_done TINYINT DEFAULT 0;
+    -> DECLARE cur2 CURSOR FOR SELECT code,name,price FROM Products WHERE manufacturer = mCode;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND SET pro_done = 1;
+    -> OPEN cur2;
+    -> products_loop: LOOP
+    -> FETCH FROM cur2 INTO xcode,xname,xprice;
+    -> IF pro_done
+    -> THEN
+    -> CLOSE cur2;
+    -> LEAVE products_loop;
+    -> END IF;
+    -> SELECT xcode,xname,xprice;
+    -> END LOOP products_loop;
+    -> END Block2;
+    -> END LOOP manufacturers_loop;
+    ->
+    -> END;//
+Query OK, 0 rows affected (0.06 sec)
+
+MariaDB [mytestdb]> CALL SP_CURSOR1(@x);//
++-------+-------+
+| mCode | mName |
++-------+-------+
+|     1 | Sony  |
++-------+-------+
+1 row in set (0.01 sec)
+
++-------+-------------+--------+
+| xcode | xname       | xprice |
++-------+-------------+--------+
+|     5 | New Monitor |    240 |
++-------+-------------+--------+
+1 row in set (0.01 sec)
+
++-------+---------------+
+| mCode | mName         |
++-------+---------------+
+|     2 | Creative Labs |
++-------+---------------+
+1 row in set (0.01 sec)
+
++-------+-----------+--------+
+| xcode | xname     | xprice |
++-------+-----------+--------+
+|     6 | DVD drive |    180 |
++-------+-----------+--------+
+1 row in set (0.05 sec)
+
++-------+----------+--------+
+| xcode | xname    | xprice |
++-------+----------+--------+
+|     7 | CD drive |     90 |
++-------+----------+--------+
+1 row in set (0.05 sec)
+
++-------+------------+--------+
+| xcode | xname      | xprice |
++-------+------------+--------+
+|    10 | DVD burner |    180 |
++-------+------------+--------+
+1 row in set (0.08 sec)
+
++-------+-----------------+
+| mCode | mName           |
++-------+-----------------+
+|     3 | Hewlett-Packard |
++-------+-----------------+
+1 row in set (0.09 sec)
+
++-------+---------+--------+
+| xcode | xname   | xprice |
++-------+---------+--------+
+|     8 | Printer |    270 |
++-------+---------+--------+
+1 row in set (0.11 sec)
+
++-------+-----------------+--------+
+| xcode | xname           | xprice |
++-------+-----------------+--------+
+|     9 | Toner cartridge |     66 |
++-------+-----------------+--------+
+1 row in set (0.11 sec)
+
++-------+--------+
+| mCode | mName  |
++-------+--------+
+|     4 | Iomega |
++-------+--------+
+1 row in set (0.14 sec)
+
++-------+-----------+--------+
+| xcode | xname     | xprice |
++-------+-----------+--------+
+|     3 | ZIP drive |    150 |
++-------+-----------+--------+
+1 row in set (0.16 sec)
+
++-------+---------+
+| mCode | mName   |
++-------+---------+
+|     5 | Fujitsu |
++-------+---------+
+1 row in set (0.17 sec)
+
++-------+------------+--------+
+| xcode | xname      | xprice |
++-------+------------+--------+
+|     1 | Hard drive |    240 |
++-------+------------+--------+
+1 row in set (0.17 sec)
+
++-------+------------+
+| mCode | mName      |
++-------+------------+
+|     6 | Winchester |
++-------+------------+
+1 row in set (0.20 sec)
+
++-------+--------+--------+
+| xcode | xname  | xprice |
++-------+--------+--------+
+|     2 | Memory |    120 |
++-------+--------+--------+
+1 row in set (0.20 sec)
+
++-------+-------------+--------+
+| xcode | xname       | xprice |
++-------+-------------+--------+
+|     4 | Floppy disk |      5 |
++-------+-------------+--------+
+1 row in set (0.23 sec)
+
+Query OK, 0 rows affected (0.23 sec)
+
+MariaDB [mytestdb]>

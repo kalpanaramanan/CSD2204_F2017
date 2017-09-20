@@ -1,0 +1,153 @@
+delimiter //
+	CREATE PROCEDURE SP_FIRST()
+		BEGIN
+			SELECT * FROM Products;
+		END;//
+delimiter;
+
+delimiter //
+	CREATE PROCEDURE SP_SECOND(manufacturerID Integer(10))
+		BEGIN
+			SELECT * FROM Products WHERE Manufacturer = manufacturerID ;
+		END;//
+delimiter;
+
+
+delimiter //
+	CREATE PROCEDURE SP_THIRD(manufacturerID Integer(10))
+		BEGIN
+			SELECT * FROM Products WHERE Manufacturer = manufacturerID ;
+			SELECT COUNT(*) FROM Products;
+
+		END;//
+delimiter;
+
+delimiter //
+	CREATE OR REPLACE PROCEDURE SP_FOUR(manufacturerID Integer(10))
+		BEGIN
+			SELECT Name FROM Manufacturers WHERE code = manufacturerID;
+			SELECT * FROM Products WHERE Manufacturer = manufacturerID ;
+		END;//
+delimiter;
+
+delimiter //
+	CREATE OR REPLACE PROCEDURE SP_FIVE(manufacturerID Integer(10))
+		BEGIN
+			SELECT @tname := Name FROM Manufacturers WHERE code = manufacturerID;
+			SELECT Code,Name,price,@tname AS Manufacturer FROM Products WHERE Manufacturer = manufacturerID ;
+		END;//
+delimiter;
+
+
+delimiter //
+	CREATE OR REPLACE PROCEDURE SP_Airthematic_Operation(caseValue Varchar(10),valueA Integer(10),valueB Integer(10))
+		BEGIN
+			CASE caseValue
+					WHEN "Add" THEN SELECT (valueA+valueB) as Addition;
+					WHEN "Sub" THEN SELECT (valueA-valueB) as Subtraction;
+					WHEN "Mul" THEN SELECT (valueA*valueB) as Multiple;
+					WHEN "Div" THEN SELECT (valueA/valueB) as Divide;
+				ELSE
+					BEGIN
+					END;
+			END CASE;
+		END;//
+delimiter;
+
+
+delimiter //
+	CREATE OR REPLACE PROCEDURE SP_FOR_LOOP(value Integer(10))
+		BEGIN
+			DECLARE x INT;
+			SET x = 0;
+			loop_label: LOOP
+			INSERT INTO number VALUES (x);
+			SET x = x + 1;
+			IF x >= value 
+			THEN
+			LEAVE loop_label;
+			END IF;
+			END LOOP;
+			select * from number ;
+		END;//
+delimiter;
+
+
+delimiter //
+	CREATE OR REPLACE PROCEDURE SP_SUM(IN n Integer(10),OUT sum Integer(10))
+		BEGIN
+			SET @total = 0;
+			SET @i = 1;
+			while (@i <= n)
+			Do
+				SET @total = @total + @i;
+				SET @i = @i + 1;
+			END WHILE;
+			SELECT  @total;
+			SET sum = @total;
+		END;//
+delimiter;
+
+
+delimiter //
+	CREATE OR REPLACE PROCEDURE SP_CURSOR(x Varchar(20))
+		BEGIN
+			DECLARE xName Varchar(20) DEFAULT 'None';
+			DECLARE xPrice DECIMAL(10,0);
+			DECLARE xCode INT;
+			DECLARE done TINYINT DEFAULT 0;
+			DECLARE curl CURSOR FOR SELECT code,name,price FROM Products;
+			DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+			
+			OPEN curl ;
+				read_loop: LOOP	
+					FETCH FROM curl INTO xcode,xname,xprice;
+					IF done THEN LEAVE read_loop;
+					END IF;
+					SELECT xcode,xname,xprice;
+				END LOOP;
+			CLOSE curl;
+		END;//
+delimiter;
+
+delimiter //
+	CREATE OR REPLACE PROCEDURE SP_CURSOR1(x Varchar(20))
+		BEGIN
+			DECLARE mCode INT;
+			DECLARE mName Varchar(20) DEFAULT 'None';
+			DECLARE xName Varchar(20) DEFAULT 'None';
+			DECLARE xPrice DECIMAL(10,0);
+			DECLARE xCode INT;
+			DECLARE manu_done TINYINT DEFAULT 0;
+			
+			DECLARE cur1 CURSOR FOR SELECT * FROM Manufacturers;
+			DECLARE CONTINUE HANDLER FOR NOT FOUND SET manu_done = 1;
+						
+			OPEN cur1 ;
+				manufacturers_loop: LOOP	
+				FETCH FROM cur1 INTO mCode,mName;
+				IF manu_done 
+				THEN 
+					CLOSE cur1;
+					LEAVE manufacturers_loop; 			
+				END IF;
+				SELECT mCode,mName;
+				Block2: BEGIN
+					DECLARE pro_done TINYINT DEFAULT 0;
+					DECLARE cur2 CURSOR FOR SELECT code,name,price FROM Products WHERE manufacturer = mCode;
+					DECLARE CONTINUE HANDLER FOR NOT FOUND SET pro_done = 1;
+					OPEN cur2;
+						products_loop: LOOP	
+						FETCH FROM cur2 INTO xcode,xname,xprice;
+						IF pro_done 
+						THEN 
+						CLOSE cur2;
+						LEAVE products_loop;
+						END IF;
+						SELECT xcode,xname,xprice;
+						END LOOP products_loop;
+				END Block2;
+				END LOOP manufacturers_loop;			
+
+	END;//
+delimiter;
